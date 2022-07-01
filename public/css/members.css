@@ -55,7 +55,7 @@ input.invalid {
     text-align: center;
 }
 
-a {
+.my-link {
     text-decoration: none;
     color: black;
     padding: 0.5rem 1rem;
@@ -63,7 +63,7 @@ a {
     margin-bottom: 2rem;
 }
 
-a:hover {
+.my-link:hover {
     background-color: darkcyan;
 }
 
@@ -178,4 +178,6 @@ button:hover {
     font-size: 0.75rem;
     color: grey;
 }
+
+
 
