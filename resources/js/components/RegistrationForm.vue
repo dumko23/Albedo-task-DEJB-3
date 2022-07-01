@@ -1,3 +1,4 @@
+<script src="../../../../Albedo-Test-remake/www/source/views/index.js"></script>
 <template>
     <form id="regForm" name="form" enctype="multipart/form-data" onsubmit="return false" method="post">
 
@@ -9,7 +10,8 @@
                 class="required">*</span>:
                 <input id="firstNameIsValid" name="data[firstName]" placeholder="First name..."
                        pattern="^[.\D]{1,30}$"
-                       maxlength="30" onkeypress="noDigits(event)" required>
+                       maxlength="30"  required
+                       @keydown.capture="noDigits($event)">
             </label>
                 <span class="error" id="firstNameError"></span>
             </p>
@@ -17,7 +19,8 @@
                 class="required">*</span>:
                 <input id="lastNameIsValid" name="data[lastName]" placeholder="Last name..."
                        pattern="^[.\D]{1,30}$"
-                       maxlength="30" onkeypress="noDigits(event)" required>
+                       maxlength="30"  required
+                       @keydown.capture="noDigits($event)">
             </label>
                 <span class="error" id="lastNameError"></span>
             </p>
@@ -81,14 +84,14 @@
                 links
             </div>
             <div class="finishAnchor">
-                <a class="my-link" href="/">Back to 1st step</a>
+                <a class="my-link" to="/" @click="toFirstStep">Back to 1st step</a>
             </div>
         </section>
 
         <div style="overflow:auto;">
             <div style="float:right;">
-                <button type="submit" id="nextBtn" v-if="step === 1 || step === 2" @click="this.step++">Next</button>
-                <button type="submit" id="step2Btn" >Finish</button>
+                <button type="submit" id="nextBtn" v-if="step === 1" @click="nextStep">Next</button>
+                <button type="submit" id="step2Btn" v-if="step === 2" @click="nextStep">Finish</button>
             </div>
         </div>
     </form>
@@ -114,6 +117,19 @@ export default {
                 about: null,
                 photo: null,
 
+            }
+        }
+    },
+    methods: {
+        nextStep: function () {
+            this.step++;
+        },
+        toFirstStep: function () {
+            this.step = 1;
+        },
+        noDigits: function (event) {
+            if ('1234567890'.indexOf(event.key) !== -1) {
+                event.preventDefault()
             }
         }
     }
