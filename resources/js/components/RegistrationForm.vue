@@ -1,7 +1,14 @@
 <script src="../../../../Albedo-Test-remake/www/source/views/index.js"></script>
 <template>
-    <form id="regForm" name="form" enctype="multipart/form-data" onsubmit="return false" method="post">
 
+    <form
+        class="regForm"
+        name="form1"
+        @submit.prevent=""
+        method="post"
+    >
+        <h1 id="regHeader" style="text-align: center">To participate in the conference, please fill out the
+            form</h1>
         <section v-if="step === 1">
             <h3>Step 1</h3>
             <h3>Personal Info:</h3>
@@ -10,18 +17,17 @@
                 class="required">*</span>:
                 <input id="firstNameIsValid" name="data[firstName]" placeholder="First name..."
                        pattern="^[.\D]{1,30}$"
-                       maxlength="30"  required
+                       maxlength="30" required
                        @keydown.capture="noDigits($event)"
                        v-model="$data.form.firstName">
             </label>
                 <span class="error" id="firstNameError"></span>
-
             </p>
             <p><label>Last name <span class="minLabel">(Only letters and '`- symbols allowed)</span><span
                 class="required">*</span>:
                 <input id="lastNameIsValid" name="data[lastName]" placeholder="Last name..."
                        pattern="^[.\D]{1,30}$"
-                       maxlength="30"  required
+                       maxlength="30" required
                        @keydown.capture="noDigits($event)"
                        v-model="$data.form.lastName">
             </label>
@@ -48,8 +54,9 @@
             </label>
                 <span class="error" id="countryError"></span>
             </p>
-            <p><label>Phone number <span class="minLabel">(in the following format: "+1 (555) 555-5555")</span><span
-                class="required">*</span>:
+            <p><label>Phone number
+                <span class="minLabel">(in the following format: "+1 (555) 555-5555")</span>
+                <span class="required">*</span>:
                 <input id="phoneIsValid" name="data[phone]" minlength="17"
                        data-mask="+0 (000) 000-0000" placeholder="+1 (555) 555-5555" required type="tel"
                        v-model="$data.form.phone">
@@ -63,7 +70,13 @@
             </label>
                 <span class="error" id="emailError"></span>
             </p>
+            <div style="overflow:auto;">
+                <div style="float:right;">
+                    <button type="submit" id="nextBtn" v-if="step === 1" @click="nextStep">Next</button>
+                </div>
+            </div>
         </section>
+
 
         <section v-if="step === 2">
             <h3>Step 2</h3>
@@ -88,7 +101,13 @@
             <span v-if="$data.form.photo">Extension: {{ $data.extension }}</span>
             <span v-if="$data.form.photo">Size: {{ $data.size }} Mb</span>
             <span id="fileWarning" class="error"></span>
+            <div style="overflow:auto;">
+                <div style="float:right;">
+                    <button type="submit" id="step2Btn" v-if="step === 2" @click="nextStep">Finish</button>
+                </div>
+            </div>
         </section>
+
 
         <section v-if="step === 3">
             <h1 style="text-align: center">Registration complete! Share it with your friends!</h1>
@@ -99,13 +118,6 @@
                 <a class="my-link" to="/" @click="toFirstStep">Back to 1st step</a>
             </div>
         </section>
-
-        <div style="overflow:auto;">
-            <div style="float:right;">
-                <button type="submit" id="nextBtn" v-if="step === 1" @click="nextStep">Next</button>
-                <button type="submit" id="step2Btn" v-if="step === 2" @click="nextStep">Finish</button>
-            </div>
-        </div>
     </form>
 </template>
 
@@ -136,7 +148,13 @@ export default {
     },
     methods: {
         nextStep: function () {
+            if (this.step === 1) {
+                this.sendData();
+            } else if (this.step === 2) {
+                this.updateData();
+            }
             this.step++;
+
         },
         toFirstStep: function () {
             this.step = 1;
@@ -158,6 +176,27 @@ export default {
             }
             this.extension = ext;
             this.size = (this.form.photo.size / 1048576).toFixed(2);
+        },
+        sendData: function () {
+            axios.post('./api/send', {
+                firstName: this.firstName,
+                lastName: this.lastName,
+                birthDate: this.birthDate,
+                country: this.country,
+                subject: this.subject,
+                phone: this.phone,
+                email: this.email,
+            });
+            // alert('send')
+        },
+        updateData: function () {
+            axios.post('./api/update', {
+                position: this.position,
+                company: this.company,
+                about: this.about,
+                photo: this.photo,
+            })
+            // alert('update')
         }
     }
 }
