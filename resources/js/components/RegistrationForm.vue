@@ -200,13 +200,13 @@ export default {
 
         },
         updateData: function () {
-            let data = new FormData();
-            data.append('photo', this.form.photo)
+            // let data = new FormData();
+            // data.append('photo', this.form.photo)
             axios.post('/update', {
                 position: this.form.position,
                 company: this.form.company,
                 about: this.form.about,
-                photo: data,
+                // photo: data,
                 email: this.form.email,
 
             }).then(
@@ -247,15 +247,13 @@ export default {
         }
     },
     beforeMount() {
-        this.fetchCountries();
         if (localStorage.email) {
             this.form.email = localStorage.email;
         }
         if (localStorage.step) {
-            if (localStorage.step === '3') {
-                localStorage.step = '1';
-            }
             this.step = +localStorage.step
+        }else {
+            this.fetchCountries();
         }
     },
 

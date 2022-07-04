@@ -28,7 +28,7 @@ class MemberController extends Controller
 
     public function update(Request $request)
     {
-        print_r($request);
+        Member::updateMember($request->all());
         return $request->all();
     }
 
