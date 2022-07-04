@@ -29,3 +29,6 @@ Route::get('/{any}',function (){
 //Auth::routes();
 //
 //Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::post('send', [MemberController::class, 'send']);
+Route::post('update', [MemberController::class, 'update']);

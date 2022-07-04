@@ -14,10 +14,22 @@ class MemberController extends Controller
         return count(Member::all(['email']));
     }
 
-    public function index(){
+    public function index()
+    {
         return view('members.index', [
             'members' => Member::all(['firstName', 'lastName', 'subject', 'photo', 'email'])
         ]);
+    }
+
+    public static function send(Request $request)
+    {
+//        return $request->all();
+        Member::storeMember($request->all());
+    }
+
+    public function update(Request $request)
+    {
+        return $request->all();
     }
 
 

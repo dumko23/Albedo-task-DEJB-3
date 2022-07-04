@@ -3,7 +3,7 @@
 
     <form
         class="regForm"
-        name="form1"
+        name="form"
         @submit.prevent=""
         method="post"
     >
@@ -115,7 +115,7 @@
                 links
             </div>
             <div class="finishAnchor">
-                <a class="my-link" to="/" @click="toFirstStep">Back to 1st step</a>
+                <a class="my-link" href="/" @click="toFirstStep">Back to 1st step</a>
             </div>
         </section>
     </form>
@@ -178,26 +178,61 @@ export default {
             this.size = (this.form.photo.size / 1048576).toFixed(2);
         },
         sendData: function () {
-            axios.post('./api/send', {
-                firstName: this.firstName,
-                lastName: this.lastName,
-                birthDate: this.birthDate,
-                country: this.country,
-                subject: this.subject,
-                phone: this.phone,
-                email: this.email,
-            });
-            // alert('send')
+            axios.post('/send', {
+                firstName: this.form.firstName,
+                lastName: this.form.lastName,
+                birthDate: this.form.birthDate,
+                country: 'this.form.country',
+                subject: this.form.subject,
+                phone: this.form.phone,
+                email: this.form.email,
+            })
+                .then(
+                    response => console.log(response.data)
+                ).catch(
+                error => console.log(error)
+            );
+
         },
         updateData: function () {
-            axios.post('./api/update', {
-                position: this.position,
-                company: this.company,
-                about: this.about,
-                photo: this.photo,
-            })
+            let data = new FormData();
+            data.append('photo', this.form.photo)
+            axios.post('/update', {
+                position: this.form.position,
+                company: this.form.company,
+                about: this.form.about,
+                photo: data,
+
+            }).then(
+                response => console.log(response.data)
+            ).catch(
+                error => console.log(error)
+            );
             // alert('update')
+        },
+        fetchCountries() {
+            axios.get('https://restcountries.com/v3.1/all')
+                .then(res => {
+                    console.log(res.data);
+                    res = new Array(...res.data)
+                    console.log(res)
+                return res;
+            })
+                .then(function (data) {
+                        const countryList = document.querySelector('.country');
+                        let output = '<option selected disabled value="default" hidden>Choose Country</option>`';
+
+                        data.sort((a, b) => (a.name.common > b.name.common) ? 1 : -1)
+                            .forEach(country => {
+                                output += `<option value="${country.name.common}">${country.name.common}</option>`;
+                                countryList.innerHTML = output;
+                            })
+                    }
+                )
         }
+    },
+    beforeMount() {
+        this.fetchCountries();
     }
 }
 </script>
