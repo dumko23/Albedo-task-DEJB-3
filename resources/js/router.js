@@ -8,15 +8,18 @@ Vue.use(vueRouter);
 const routes = [
     {
         path: "/",
-        component: Index
+        component: Index,
+        meta: { transition: 'slide-left' },
     },
     {
         path: "/members",
-        component: Members
+        component: Members,
+        meta: { transition: 'slide-right' },
     },
 ];
 
 export default new vueRouter({
     mode: "history",
-    routes
+    routes,
+
 });

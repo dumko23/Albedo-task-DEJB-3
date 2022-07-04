@@ -18,7 +18,8 @@ use Illuminate\Support\Facades\Route;
 //Route::get('/', function () {
 //    return view('index');
 //});
-
+Route::get('getMembers', [MemberController::class, 'getMembers']);
+Route::get('getMembersCount', [MemberController::class, 'getMembersCount']);
 Route::get('/{any}',function (){
     return view('index');
 })->where('any', '.*');
@@ -32,3 +33,4 @@ Route::get('/{any}',function (){
 
 Route::post('send', [MemberController::class, 'send']);
 Route::post('update', [MemberController::class, 'update']);
+

@@ -1,6 +1,7 @@
 html {
     font-family: 'Gentium Plus', serif;
     background-color: azure;
+    scroll-behavior: smooth;
 }
 
 .regForm {

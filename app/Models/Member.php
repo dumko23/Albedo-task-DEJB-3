@@ -13,6 +13,6 @@ class Member extends Model
     public static function storeMember($data)
     {
         print_r($data);
-        DB::insert('insert into members (firstName, lastName, birthDate,country, subject, phone, email) values (?,?,?,? ,?,?,?)', $data);
+        DB::insert('insert into members (firstName, lastName, birthDate, country, subject, phone, email) values (?,?,?,?,?,?,?)', array_values($data));
     }
 }

@@ -3,25 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Models\Member;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
 class MemberController extends Controller
 {
     //
 
-    public function membersCount(): int
+    public function getMembersCount(): int
     {
         return count(Member::all(['email']));
     }
 
-    public function index()
+    public function getMembers(): Collection
     {
-        return view('members.index', [
-            'members' => Member::all(['firstName', 'lastName', 'subject', 'photo', 'email'])
-        ]);
+        return Member::all(['firstName', 'lastName', 'subject', 'photo', 'email']);
+
     }
 
-    public static function send(Request $request)
+    public function send(Request $request)
     {
 //        return $request->all();
         Member::storeMember($request->all());
@@ -31,6 +32,5 @@ class MemberController extends Controller
     {
         return $request->all();
     }
-
 
 }

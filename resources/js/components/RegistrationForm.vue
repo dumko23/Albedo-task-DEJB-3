@@ -1,4 +1,3 @@
-<script src="../../../../Albedo-Test-remake/www/source/views/index.js"></script>
 <template>
 
     <form
@@ -10,7 +9,7 @@
         <h1 id="regHeader" style="text-align: center">To participate in the conference, please fill out the
             form</h1>
         <section v-if="step === 1">
-            <h3>Step 1</h3>
+            <h3>Step {{ $data.step }}</h3>
             <h3>Personal Info:</h3>
             <p><span class="required">*</span> - Required</p>
             <p><label>First name <span class="minLabel">(Only letters and '`- symbols allowed)</span><span
@@ -79,7 +78,7 @@
 
 
         <section v-if="step === 2">
-            <h3>Step 2</h3>
+            <h3>Step {{ $data.step }}</h3>
             <h3>Additional info:</h3>
             <p><label>Company:
                 <input name="data[company]" placeholder="Company..."
@@ -182,7 +181,7 @@ export default {
                 firstName: this.form.firstName,
                 lastName: this.form.lastName,
                 birthDate: this.form.birthDate,
-                country: 'this.form.country',
+                country: 'this',
                 subject: this.form.subject,
                 phone: this.form.phone,
                 email: this.form.email,
@@ -213,12 +212,10 @@ export default {
         fetchCountries() {
             axios.get('https://restcountries.com/v3.1/all')
                 .then(res => {
-                    console.log(res.data);
                     res = new Array(...res.data)
-                    console.log(res)
                 return res;
             })
-                .then(function (data) {
+                .then(data => {
                         const countryList = document.querySelector('.country');
                         let output = '<option selected disabled value="default" hidden>Choose Country</option>`';
 
@@ -233,7 +230,8 @@ export default {
     },
     beforeMount() {
         this.fetchCountries();
-    }
+    },
+
 }
 </script>
 
