@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('members', function (Blueprint $table) {
             $table->increments('memberId');
             $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrentOnUpdate();
+            $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable();
             $table->date('birthDate');
             $table->string('firstName', 30);
             $table->string('lastName', 30);
