@@ -2,7 +2,7 @@
     <div>
         <map-content></map-content>
 
-        <registration-form v-on:change="this.fetchMembersCount"></registration-form>
+        <registration-form @changeStep="fetchMembersCount"></registration-form>
 
         <div class="members-link">
             <router-link class="my-link " to="/members">All members ({{ $data.members }})</router-link>
@@ -20,7 +20,7 @@ export default {
         return {
             step: 1,
             totalStep: 3,
-            members: {}
+            members: 0
         }
     },
     methods: {
@@ -34,11 +34,8 @@ export default {
     },
     beforeMount() {
         this.fetchMembersCount()
-    },
-    updated() {
-        this.fetchMembersCount()
-    },
-    
+    }
+
 }
 </script>
 

@@ -153,7 +153,7 @@ export default {
                 this.updateData();
             }
             this.step++;
-
+            this.trackChanges()
         },
         toFirstStep: function () {
             this.step = 1;
@@ -226,6 +226,11 @@ export default {
                             })
                     }
                 )
+        },
+        trackChanges() {
+            this.$emit('changeStep',{
+                step: this.step
+            })
         }
     },
     beforeMount() {
