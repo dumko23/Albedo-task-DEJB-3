@@ -49,6 +49,7 @@
                 <select class="country" id="countryIsValid" name="data[country]" required
                         v-model="$data.form.country">
                     <option selected disabled value="default" hidden>Choose Country</option>
+                    <option v-for="country in $data.countries" :value="country">{{ country }}</option>
                 </select>
             </label>
                 <span class="error" id="countryError"></span>
@@ -142,18 +143,20 @@ export default {
 
             },
             extension: null,
-            size: null
+            size: null,
+            countries: []
         }
     },
     methods: {
         nextStep: function () {
             if (this.step === 1) {
                 this.sendData();
+                this.trackChanges();
             } else if (this.step === 2) {
                 this.updateData();
             }
             this.step++;
-            this.trackChanges()
+
         },
         toFirstStep: function () {
             this.step = 1;
@@ -181,7 +184,7 @@ export default {
                 firstName: this.form.firstName,
                 lastName: this.form.lastName,
                 birthDate: this.form.birthDate,
-                country: 'this',
+                country: this.form.country,
                 subject: this.form.subject,
                 phone: this.form.phone,
                 email: this.form.email,
@@ -191,6 +194,9 @@ export default {
                 ).catch(
                 error => console.log(error)
             );
+            this.persist();
+            console.log(localStorage.step);
+            this.countries = [];
 
         },
         updateData: function () {
@@ -201,6 +207,7 @@ export default {
                 company: this.form.company,
                 about: this.form.about,
                 photo: data,
+                email: this.form.email,
 
             }).then(
                 response => console.log(response.data)
@@ -208,34 +215,50 @@ export default {
                 error => console.log(error)
             );
             // alert('update')
+            this.deleteStore();
         },
         fetchCountries() {
             axios.get('https://restcountries.com/v3.1/all')
                 .then(res => {
                     res = new Array(...res.data)
-                return res;
-            })
+                    return res;
+                })
                 .then(data => {
-                        const countryList = document.querySelector('.country');
-                        let output = '<option selected disabled value="default" hidden>Choose Country</option>`';
-
                         data.sort((a, b) => (a.name.common > b.name.common) ? 1 : -1)
                             .forEach(country => {
-                                output += `<option value="${country.name.common}">${country.name.common}</option>`;
-                                countryList.innerHTML = output;
+                                this.countries.push(country.name.common);
                             })
                     }
                 )
         },
         trackChanges() {
-            this.$emit('changeStep',{
+            this.$emit('changeStep', {
                 step: this.step
             })
+        },
+        persist() {
+            localStorage.step = 2;
+            localStorage.email = this.form.email;
+            console.log(localStorage.step, localStorage.email);
+        },
+        deleteStore() {
+            localStorage.clear()
+
         }
     },
     beforeMount() {
         this.fetchCountries();
+        if (localStorage.email) {
+            this.form.email = localStorage.email;
+        }
+        if (localStorage.step) {
+            if (localStorage.step === '3') {
+                localStorage.step = '1';
+            }
+            this.step = +localStorage.step
+        }
     },
+
 
 }
 </script>

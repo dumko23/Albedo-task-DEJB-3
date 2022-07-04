@@ -12,7 +12,17 @@ class Member extends Model
 
     public static function storeMember($data)
     {
-        print_r($data);
         DB::insert('insert into members (firstName, lastName, birthDate, country, subject, phone, email) values (?,?,?,?,?,?,?)', array_values($data));
+    }
+
+    public static function updateMember($data)
+    {
+        DB::table('members')
+            ->where('email', $data['email'])
+            ->update([
+                'about' => $data['about'],
+                'position' => $data['position'],
+                'company' => $data['company'],
+                'photo' => 'photo uploaded']);
     }
 }
