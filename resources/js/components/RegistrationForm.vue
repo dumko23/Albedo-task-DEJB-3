@@ -9,7 +9,7 @@
         <h1 id="regHeader" style="text-align: center">To participate in the conference, please fill out the
             form</h1>
         <section v-if="step === 1">
-            <h3>Step {{ $data.step }}</h3>
+            <h3>Step {{ step }}</h3>
             <h3>Personal Info:</h3>
             <p><span class="required">*</span> - Required</p>
             <p><label>First name <span class="minLabel">(Only letters and '`- symbols allowed)</span><span
@@ -20,7 +20,9 @@
                        @keydown.capture="noDigits($event)"
                        v-model="$data.form.firstName">
             </label>
-                <span class="error" id="firstNameError"></span>
+                <span class="error" id="firstNameError" v-if="errors.firstName">
+                    {{ errors.firstName[0] }}
+                </span>
             </p>
             <p><label>Last name <span class="minLabel">(Only letters and '`- symbols allowed)</span><span
                 class="required">*</span>:
@@ -30,20 +32,26 @@
                        @keydown.capture="noDigits($event)"
                        v-model="$data.form.lastName">
             </label>
-                <span class="error" id="lastNameError"></span>
+                <span class="error" id="lastNameError" v-if="errors.lastName">
+                    {{ errors.lastName[0] }}
+                </span>
             </p>
             <p><label>Birth date<span class="required">*</span>:
                 <input id="dateIsValid" name="data[birthDate]" placeholder="Birthdate..."
                        min="1900-01-01" max="2005-01-01" type="date" required
                        v-model="$data.form.birthDate">
             </label>
-                <span class="error" id="dateError"></span>
+                <span class="error" id="dateError" v-if="errors.birthDate">
+                    {{ errors.birthDate[0] }}
+                </span>
             </p>
             <p><label>Report subject<span class="required">*</span>:
                 <input id="subjectIsValid" name="data[subject]" placeholder="Repost subject..."
                        required v-model="$data.form.subject">
             </label>
-                <span class="error" id="subjectError"></span>
+                <span class="error" id="subjectError" v-if="errors.subject">
+                    {{ errors.subject[0] }}
+                </span>
             </p>
             <p><label>Country<span class="required">*</span>:
                 <select class="country" id="countryIsValid" name="data[country]" required
@@ -52,7 +60,9 @@
                     <option v-for="country in $data.countries" :value="country">{{ country }}</option>
                 </select>
             </label>
-                <span class="error" id="countryError"></span>
+                <span class="error" id="countryError" v-if="errors.country">
+                    {{ errors.country[0] }}
+                </span>
             </p>
             <p><label>Phone number
                 <span class="minLabel">(in the following format: "+1 (555) 555-5555")</span>
@@ -61,14 +71,18 @@
                        data-mask="+0 (000) 000-0000" placeholder="+1 (555) 555-5555" required type="tel"
                        v-model="$data.form.phone">
             </label>
-                <span class="error" id="phoneError"></span>
+                <span class="error" id="phoneError" v-if="errors.phone">
+                    {{ errors.phone[0] }}
+                </span>
             </p>
             <p><label>Email<span class="required">*</span>:
                 <input id="emailIsValid" name="data[email]" placeholder="your.email@example.com"
                        required type="email"
                        v-model="$data.form.email">
             </label>
-                <span class="error" id="emailError"></span>
+                <span class="error" id="emailError" v-if="errors.email">
+                    {{ errors.email[0] }}
+                </span>
             </p>
             <div style="overflow:auto;">
                 <div style="float:right;">
@@ -79,7 +93,7 @@
 
 
         <section v-if="step === 2">
-            <h3>Step {{ $data.step }}</h3>
+            <h3>Step {{ step }}</h3>
             <h3>Additional info:</h3>
             <p><label>Company:
                 <input name="data[company]" placeholder="Company..."
@@ -98,8 +112,8 @@
                 <input id="imgLoad" name="photo" type="file" accept=".png, .jpg, .jpeg"
                        @change="uploads">
             </label></p>
-            <span v-if="$data.form.photo">Extension: {{ $data.extension }}</span>
-            <span v-if="$data.form.photo">Size: {{ $data.size }} Mb</span>
+            <span v-if="$data.form.photo">Extension: {{ extension }}</span>
+            <span v-if="$data.form.photo">Size: {{ size }} Mb</span>
             <span id="fileWarning" class="error"></span>
             <div style="overflow:auto;">
                 <div style="float:right;">
@@ -144,7 +158,9 @@ export default {
             },
             extension: null,
             size: null,
-            countries: []
+            countries: [],
+            errors: [],
+            error_exist: false,
         }
     },
     methods: {
@@ -155,8 +171,6 @@ export default {
             } else if (this.step === 2) {
                 this.updateData();
             }
-            this.step++;
-
         },
         toFirstStep: function () {
             this.step = 1;
@@ -190,14 +204,29 @@ export default {
                 email: this.form.email,
             })
                 .then(
-                    response => console.log(response.data)
+                    response => {
+                        console.log(this.errors)
+                        this.error_exist = false;
+                    }
                 ).catch(
-                error => console.log(error)
-            );
-            this.persist();
-            console.log(localStorage.step);
-            this.countries = [];
+                error => {
+                    if (error.response.status === 422) {
+                        this.errors = error.response.data.errors || {};
+                        this.error_exist = true;
+                    } else {
+                        this.error_exist = false;
+                        console.log(error)
+                    }
 
+                })
+                .then(() => {
+                    if (this.error_exist) {
+                        return false;
+                    }
+                    this.persist();
+                    this.countries = [];
+                    this.step++;
+                })
         },
         updateData: function () {
             // let data = new FormData();
@@ -214,8 +243,8 @@ export default {
             ).catch(
                 error => console.log(error)
             );
-            // alert('update')
             this.deleteStore();
+            this.step++;
         },
         fetchCountries() {
             axios.get('https://restcountries.com/v3.1/all')
@@ -239,7 +268,6 @@ export default {
         persist() {
             localStorage.step = 2;
             localStorage.email = this.form.email;
-            console.log(localStorage.step, localStorage.email);
         },
         deleteStore() {
             localStorage.clear()
@@ -252,7 +280,7 @@ export default {
         }
         if (localStorage.step) {
             this.step = +localStorage.step
-        }else {
+        } else {
             this.fetchCountries();
         }
     },
