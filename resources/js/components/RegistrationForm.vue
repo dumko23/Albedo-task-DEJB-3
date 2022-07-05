@@ -114,6 +114,7 @@
                        @change="uploads">
             </label></p>
             <span v-if="$data.form.photo">Extension: {{ extension }}</span>
+            <br>
             <span v-if="$data.form.photo">Size: {{ fileSize }} Mb</span>
             <span id="fileWarning" class="error" v-if="photo_error">Max file size is 10 MB. Your is {{
                     fileSize
@@ -188,6 +189,7 @@ export default {
         uploads: function (event) {
             this.form.photo = event.target.files['0'];
             this.getFileInfo();
+            this.validateUpload();
         },
         getFileInfo: function () {
             let ext = "Couldn't resolve";
@@ -237,9 +239,9 @@ export default {
             // let data = new FormData();
             // data.append('photo', this.form.photo)
 
-            if (!this.validateUpload()) {
+            if (this.photo_error) {
                 return false;
-            } else if (!this.dataExists()){
+            } else if (!this.dataExists()) {
                 this.deleteStore();
                 this.step++;
                 return true;
@@ -292,6 +294,7 @@ export default {
                 this.photo_error = true;
                 return false
             } else {
+                this.photo_error = false;
                 return true
             }
         },

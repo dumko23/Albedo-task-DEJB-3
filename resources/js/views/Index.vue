@@ -5,7 +5,10 @@
         <registration-form @changeStep="fetchMembersCount"></registration-form>
 
         <div class="members-link">
-            <router-link class="my-link " to="/members">All members ({{ $data.members }})</router-link>
+            <router-link class="my-link " to="/members">All members ({{
+                    $data.members
+                }})
+            </router-link>
         </div>
     </div>
 </template>
@@ -34,6 +37,9 @@ export default {
     },
     beforeMount() {
         this.fetchMembersCount()
+    },
+    beforeDestroy() {
+        localStorage.clear()
     }
 
 }
