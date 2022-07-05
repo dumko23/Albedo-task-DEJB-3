@@ -56,7 +56,7 @@
             <p><label>Country<span class="required">*</span>:
                 <select class="country" id="countryIsValid" name="data[country]" required
                         v-model="$data.form.country">
-                    <option selected disabled value="default" hidden>Choose Country</option>
+                    <option selected disabled="disabled" value="null">Choose Country</option>
                     <option v-for="country in $data.countries" :value="country">{{ country }}</option>
                 </select>
             </label>
@@ -68,7 +68,7 @@
                 <span class="minLabel">(in the following format: "+1 (555) 555-5555")</span>
                 <span class="required">*</span>:
                 <input id="phoneIsValid" name="data[phone]" minlength="17"
-                       data-mask="+0 (000) 000-0000" placeholder="+1 (555) 555-5555" required type="tel"
+                       placeholder="+1 (555) 555-5555" required type="tel"
                        v-model="$data.form.phone"
                 v-mask="'+# (###) ###-####'">
             </label>
