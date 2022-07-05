@@ -70,7 +70,7 @@
                 <input id="phoneIsValid" name="data[phone]" minlength="17"
                        placeholder="+1 (555) 555-5555" required type="tel"
                        v-model="$data.form.phone"
-                v-mask="'+# (###) ###-####'">
+                       v-mask="'+# (###) ###-####'">
             </label>
                 <span class="error" id="phoneError" v-if="errors.phone">
                     {{ errors.phone[0] }}
@@ -114,8 +114,10 @@
                        @change="uploads">
             </label></p>
             <span v-if="$data.form.photo">Extension: {{ extension }}</span>
-            <span v-if="$data.form.photo">Size: {{ size }} Mb</span>
-            <span id="fileWarning" class="error"></span>
+            <span v-if="$data.form.photo">Size: {{ fileSize }} Mb</span>
+            <span id="fileWarning" class="error" v-if="photo_error">Max file size is 10 MB. Your is {{
+                    fileSize
+                }} MB</span>
             <div style="overflow:auto;">
                 <div style="float:right;">
                     <button type="submit" id="step2Btn" v-if="step === 2" @click="nextStep">Finish</button>
@@ -162,6 +164,8 @@ export default {
             countries: [],
             errors: [],
             error_exist: false,
+            photo_error: false,
+            fileSize: 0,
         }
     },
     methods: {
@@ -192,7 +196,7 @@ export default {
                 ext = '.' + parts.pop()
             }
             this.extension = ext;
-            this.size = (this.form.photo.size / 1048576).toFixed(2);
+            this.fileSize = (this.form.photo.size / 1048576).toFixed(2);
         },
         sendData: function () {
             axios.post('/send', {
@@ -232,6 +236,14 @@ export default {
         updateData: function () {
             // let data = new FormData();
             // data.append('photo', this.form.photo)
+
+            if (!this.validateUpload()) {
+                return false;
+            } else if (!this.dataExists()){
+                this.deleteStore();
+                this.step++;
+                return true;
+            }
             axios.post('/update', {
                 position: this.form.position,
                 company: this.form.company,
@@ -273,6 +285,21 @@ export default {
         deleteStore() {
             localStorage.clear()
 
+        },
+        validateUpload() {
+            if (this.form.photo && this.form.photo.size > 10485760) {
+                this.fileSize = (this.form.photo.size / 1048576).toFixed(2);
+                this.photo_error = true;
+                return false
+            } else {
+                return true
+            }
+        },
+        dataExists() {
+            return !(!this.form.photo &&
+                !this.form.about &&
+                !this.form.company &&
+                !this.form.position);
         }
     },
     beforeMount() {
