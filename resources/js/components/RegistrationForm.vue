@@ -4,8 +4,7 @@
         class="regForm"
         name="form"
         @submit.prevent=""
-        method="post"
-    >
+        method="post">
         <h1 id="regHeader" style="text-align: center">To participate in the conference, please fill out the
             form</h1>
         <section v-if="step === 1">
@@ -14,7 +13,9 @@
             <p><span class="required">*</span> - Required</p>
             <p><label>First name <span class="minLabel">(Only letters and '`- symbols allowed)</span><span
                 class="required">*</span>:
-                <input id="firstNameIsValid" name="data[firstName]" placeholder="First name..."
+                <input id="firstNameIsValid"
+                       name="data[firstName]"
+                       placeholder="First name..."
                        pattern="^[.\D]{1,30}$"
                        maxlength="30" required
                        @keydown.capture="noDigits($event)"
@@ -26,7 +27,9 @@
             </p>
             <p><label>Last name <span class="minLabel">(Only letters and '`- symbols allowed)</span><span
                 class="required">*</span>:
-                <input id="lastNameIsValid" name="data[lastName]" placeholder="Last name..."
+                <input id="lastNameIsValid"
+                       name="data[lastName]"
+                       placeholder="Last name..."
                        pattern="^[.\D]{1,30}$"
                        maxlength="30" required
                        @keydown.capture="noDigits($event)"
@@ -37,8 +40,13 @@
                 </span>
             </p>
             <p><label>Birth date<span class="required">*</span>:
-                <input id="dateIsValid" name="data[birthDate]" placeholder="Birthdate..."
-                       min="1900-01-01" max="2005-01-01" type="date" required
+                <input id="dateIsValid"
+                       name="data[birthDate]"
+                       placeholder="Birthdate..."
+                       min="1900-01-01"
+                       max="2005-01-01"
+                       type="date"
+                       required
                        v-model="$data.form.birthDate">
             </label>
                 <span class="error" id="dateError" v-if="errors.birthDate">
@@ -46,15 +54,21 @@
                 </span>
             </p>
             <p><label>Report subject<span class="required">*</span>:
-                <input id="subjectIsValid" name="data[subject]" placeholder="Repost subject..."
-                       required v-model="$data.form.subject">
+                <input id="subjectIsValid"
+                       name="data[subject]"
+                       placeholder="Repost subject..."
+                       required
+                       v-model="$data.form.subject">
             </label>
                 <span class="error" id="subjectError" v-if="errors.subject">
                     {{ errors.subject[0] }}
                 </span>
             </p>
             <p><label>Country<span class="required">*</span>:
-                <select class="country" id="countryIsValid" name="data[country]" required
+                <select class="country"
+                        id="countryIsValid"
+                        name="data[country]"
+                        required
                         v-model="$data.form.country">
                     <option selected disabled="disabled" value="null">Choose Country</option>
                     <option v-for="country in $data.countries" :value="country">{{ country }}</option>
@@ -67,8 +81,11 @@
             <p><label>Phone number
                 <span class="minLabel">(in the following format: "+1 (555) 555-5555")</span>
                 <span class="required">*</span>:
-                <input id="phoneIsValid" name="data[phone]" minlength="17"
-                       placeholder="+1 (555) 555-5555" required type="tel"
+                <input id="phoneIsValid"
+                       name="data[phone]"
+                       minlength="17"
+                       placeholder="+1 (555) 555-5555"
+                       required type="tel"
                        v-model="$data.form.phone"
                        v-mask="'+# (###) ###-####'">
             </label>
@@ -77,7 +94,9 @@
                 </span>
             </p>
             <p><label>Email<span class="required">*</span>:
-                <input id="emailIsValid" name="data[email]" placeholder="your.email@example.com"
+                <input id="emailIsValid"
+                       name="data[email]"
+                       placeholder="your.email@example.com"
                        required type="email"
                        v-model="$data.form.email">
             </label>
@@ -110,7 +129,10 @@
             </label></p>
             <input type="hidden" name="MAX_FILE_SIZE" value="10485760"/>
             <p><label>My Photo (.png, .jpg, .jpeg - up to 10Mb):
-                <input id="imgLoad" name="photo" type="file" accept=".png, .jpg, .jpeg"
+                <input id="imgLoad"
+                       name="photo"
+                       type="file"
+                       accept=".png, .jpg, .jpeg"
                        @change="uploads">
             </label></p>
             <span v-if="$data.form.photo">Extension: {{ extension }}</span>
@@ -129,9 +151,9 @@
 
         <section v-if="step === 3">
             <h1 style="text-align: center">Registration complete! Share it with your friends!</h1>
-            <div class="flex-row">
-                links
-            </div>
+
+            <social-links></social-links>
+
             <div class="finishAnchor">
                 <a class="my-link" href="/" @click="toFirstStep">Back to 1st step</a>
             </div>
@@ -140,8 +162,11 @@
 </template>
 
 <script>
+import SocialLinks from "./SocialLinks";
+
 export default {
     name: "RegistrationForm",
+    components: {SocialLinks},
     data() {
         return {
             step: 1,
