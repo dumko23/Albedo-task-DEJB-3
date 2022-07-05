@@ -22,8 +22,8 @@ return new class extends Migration
             $table->string('lastName', 30);
             $table->string('subject', 255);
             $table->string('country', 255);
-            $table->string('email', 30)->unique();
-            $table->string('phone', 30);
+            $table->string('email', 256)->unique();
+            $table->string('phone', 17);
             $table->string('position', 255)->nullable();
             $table->string('company', 255)->nullable();
             $table->text('about')->nullable();
