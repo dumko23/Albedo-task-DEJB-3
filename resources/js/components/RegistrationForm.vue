@@ -69,7 +69,8 @@
                 <span class="required">*</span>:
                 <input id="phoneIsValid" name="data[phone]" minlength="17"
                        data-mask="+0 (000) 000-0000" placeholder="+1 (555) 555-5555" required type="tel"
-                       v-model="$data.form.phone">
+                       v-model="$data.form.phone"
+                v-mask="'+# (###) ###-####'">
             </label>
                 <span class="error" id="phoneError" v-if="errors.phone">
                     {{ errors.phone[0] }}

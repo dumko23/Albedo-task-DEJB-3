@@ -30,6 +30,9 @@ Vue.component('map-content', require('./components/MapContent.vue').default);
 
 import router from './router';
 
+import VueMask from 'v-mask'
+Vue.use(VueMask)
+
 
 const app = new Vue({
     el: '#app',
