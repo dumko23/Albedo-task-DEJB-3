@@ -33,6 +33,10 @@ import router from './router';
 import VueMask from 'v-mask'
 Vue.use(VueMask)
 
+import VueSocialSharing from 'vue-social-sharing'
+
+Vue.use(VueSocialSharing);
+
 
 const app = new Vue({
     el: '#app',

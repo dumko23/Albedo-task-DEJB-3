@@ -26,6 +26,7 @@
     },
     "dependencies": {
         "v-mask": "^2.3.0",
-        "vue-router": "^3.4.6"
+        "vue-router": "^3.4.6",
+        "vue-social-sharing": "^3.0.9"
     }
 }

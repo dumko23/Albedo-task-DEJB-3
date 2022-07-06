@@ -6,9 +6,10 @@
         @submit.prevent=""
         method="post"
         enctype="multipart/form-data">
-        <h1 id="regHeader" style="text-align: center">To participate in the conference, please fill out the
-            form</h1>
+
         <section v-if="step === 1">
+            <h1 id="regHeader" style="text-align: center">To participate in the conference, please fill out the
+                form</h1>
             <h3>Step {{ step }}</h3>
             <h3>Personal Info:</h3>
             <p><span class="required">*</span> - Required</p>
@@ -164,7 +165,7 @@
         <section v-if="step === 3">
             <h1 style="text-align: center">Registration complete! Share it with your friends!</h1>
 
-            <social-links></social-links>
+            <social-links :social-message="this.$attrs['social-message']"></social-links>
 
             <div class="finishAnchor">
                 <a class="my-link" href="/" @click="toFirstStep">Back to 1st step</a>
@@ -249,7 +250,7 @@ export default {
             })
                 .then(
                     response => {
-                        console.log(this.errors)
+                        console.log(response)
                         this.error_exist = false;
                     }
                 ).catch(
@@ -297,7 +298,6 @@ export default {
                         console.log(response.data);
                         this.error_exist = false;
                     }
-
                 ).catch(
                     error => {
                         if (error.response.status === 422) {
