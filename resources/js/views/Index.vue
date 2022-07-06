@@ -2,11 +2,12 @@
     <div>
         <map-content></map-content>
 
-        <registration-form @changeStep="fetchMembersCount"></registration-form>
+        <registration-form @changeStep="fetchMembersCount"
+                           :social-message="this.$attrs['social-message']"></registration-form>
 
         <div class="members-link">
             <router-link class="my-link " to="/members">All members ({{
-                    $data.members
+                $data.members
                 }})
             </router-link>
         </div>
@@ -40,7 +41,8 @@ export default {
     },
     beforeDestroy() {
         localStorage.clear()
-    }
+    },
+
 
 }
 </script>

@@ -1,4 +1,9 @@
-<!doctype html>
+@php
+    use Illuminate\Support\Facades\Config;
+
+    $socialMessage = Config::get('_socials.message')
+@endphp
+    <!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -12,7 +17,7 @@
 <body>
 
 <div id="app">
-    <router-view></router-view>
+    <router-view :social-message="'{{$socialMessage}}'"></router-view>
 </div>
 <script src="{{ mix('js/app.js') }}"></script>
 </body>
