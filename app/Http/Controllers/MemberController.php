@@ -51,29 +51,42 @@ class MemberController extends Controller
 
     public function update(Request $request)
     {
-        $request->validate([
-            'position' => 'max:255',
-            'company' => 'max:255',
-        ], [
-            'max' => 'This filed should be less than :max symbols!'
-        ]);
-        Member::updateMember($request->all());
-    }
+        $newImageName = 'default-image.png';
 
-    public function uploadFile(Request $request)
-    {
-        $request->validate([
-            'photo' => 'mimes:jpg,png,jpeg|file|max:10485760'
-        ]);
+        if ($request->hasFile('photo')) {
+            $request->validate(
+                [
+                    'position' => 'max:255',
+                    'company' => 'max:255',
+                    'photo' => 'mimes:jpg,png,jpeg|file|max:10485760'
+                ],
+                [
+                    'max' => 'This filed should be less than :max symbols!',
+                    'photo.max' => 'File size is greater than :max bytes!'
+                ]);
+            $newImageName = 'images/' . time() . '-' . $request->get('newName') . '.' . $request->file('photo')->extension();
+            $request->file('photo')->move(public_path('images'), $newImageName);
 
-        $newImageName = time() . '-' . $request->get('newName') . '.' . $request->file('photo')->extension();
-        $request->file('photo')->move(public_path('images'), $newImageName);
+        } else {
+            $request->validate(
+                [
+                    'position' => 'max:255',
+                    'company' => 'max:255',
+                ],
+                [
+                    'max' => 'This filed should be less than :max symbols!',
+                ]);
+        }
+
         $data = [
             'email' => $request->get('email'),
-            'path' => 'images/' . $newImageName,
+            'path' => $newImageName,
+            'position' => $request->get('position'),
+            'company' => $request->get('company'),
+            'about' => $request->get('about'),
         ];
-        Member::updatePhoto($data);
-
+        Member::updateMember($data);
     }
+
 
 }

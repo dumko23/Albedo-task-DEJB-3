@@ -22,16 +22,7 @@ class Member extends Model
             ->update([
                     'about' => $data['about'],
                     'position' => $data['position'],
-                    'company' => $data['company']
-                ]
-            );
-    }
-
-    public static function updatePhoto($data)
-    {
-        DB::table('members')
-            ->where('email', $data['email'])
-            ->update([
+                    'company' => $data['company'],
                     'photo' => $data['path']
                 ]
             );

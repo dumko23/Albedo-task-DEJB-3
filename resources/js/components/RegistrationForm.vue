@@ -282,14 +282,20 @@ export default {
                 return true;
             }
 
-            if (this.form.photo) {
+            if (this.form.photo
+                || this.form.about
+                || this.form.company
+                || this.form.position) {
                 let data = new FormData();
                 let newFileName = this.form.email.split('@')[0];
-                data.append('photo', this.form.photo);
-                data.append('email', this.form.email);
-                data.append('newName', newFileName);
 
-                axios.post('/uploadFile', data, {
+                data.append('newName', newFileName);
+                let array = ['photo', 'email', 'position', 'company', 'about']
+                for (let i = 0; i < array.length; i++) {
+                    data.append(array[i], this.form[array[i]]);
+                }
+
+                axios.post('/update', data, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
@@ -316,21 +322,6 @@ export default {
                     this.step++;
                 });
             }
-
-            if ((this.form.about || this.form.position || this.form.company) && !this.error_exist) {
-                axios.post('/update', {
-                    position: this.form.position,
-                    company: this.form.company,
-                    about: this.form.about,
-                    email: this.form.email,
-
-                }).then(
-                    response => console.log(response.data)
-                ).catch(
-                    error => console.log(error)
-                );
-            }
-
 
         },
         fetchCountries() {
