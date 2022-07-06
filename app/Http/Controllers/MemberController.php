@@ -58,7 +58,6 @@ class MemberController extends Controller
             'max' => 'This filed should be less than :max symbols!'
         ]);
         Member::updateMember($request->all());
-        return $request->all();
     }
 
     public function uploadFile(Request $request)
@@ -66,8 +65,8 @@ class MemberController extends Controller
         $request->validate([
             'photo' => 'mimes:jpg,png,jpeg|file|max:10485760'
         ]);
+
         $newImageName = time() . '-' . $request->get('newName') . '.' . $request->file('photo')->extension();
-//        $path = $request->file('photo')->store('images');
         $request->file('photo')->move(public_path('images'), $newImageName);
         $data = [
             'email' => $request->get('email'),
