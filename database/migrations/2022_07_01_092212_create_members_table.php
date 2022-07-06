@@ -27,7 +27,7 @@ return new class extends Migration
             $table->string('position', 255)->nullable();
             $table->string('company', 255)->nullable();
             $table->text('about')->nullable();
-            $table->string('photo', 255)->default('images/default-image.png');
+            $table->string('photo', 255)->default('default-image.png');
         });
     }
 

@@ -33,4 +33,5 @@ Route::get('/{any}',function (){
 
 Route::post('send', [MemberController::class, 'send']);
 Route::post('update', [MemberController::class, 'update']);
+Route::post('uploadFile', [MemberController::class, 'uploadFile']);
 

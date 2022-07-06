@@ -4,7 +4,8 @@
         class="regForm"
         name="form"
         @submit.prevent=""
-        method="post">
+        method="post"
+        enctype="multipart/form-data">
         <h1 id="regHeader" style="text-align: center">To participate in the conference, please fill out the
             form</h1>
         <section v-if="step === 1">
@@ -21,7 +22,7 @@
                        @keydown.capture="noDigits($event)"
                        v-model="$data.form.firstName">
             </label>
-                <span class="error" id="firstNameError" v-if="errors.firstName">
+                <span class="error" v-if="errors.firstName">
                     {{ errors.firstName[0] }}
                 </span>
             </p>
@@ -35,7 +36,7 @@
                        @keydown.capture="noDigits($event)"
                        v-model="$data.form.lastName">
             </label>
-                <span class="error" id="lastNameError" v-if="errors.lastName">
+                <span class="error" v-if="errors.lastName">
                     {{ errors.lastName[0] }}
                 </span>
             </p>
@@ -49,7 +50,7 @@
                        required
                        v-model="$data.form.birthDate">
             </label>
-                <span class="error" id="dateError" v-if="errors.birthDate">
+                <span class="error" v-if="errors.birthDate">
                     {{ errors.birthDate[0] }}
                 </span>
             </p>
@@ -60,7 +61,7 @@
                        required
                        v-model="$data.form.subject">
             </label>
-                <span class="error" id="subjectError" v-if="errors.subject">
+                <span class="error" v-if="errors.subject">
                     {{ errors.subject[0] }}
                 </span>
             </p>
@@ -74,7 +75,7 @@
                     <option v-for="country in $data.countries" :value="country">{{ country }}</option>
                 </select>
             </label>
-                <span class="error" id="countryError" v-if="errors.country">
+                <span class="error" v-if="errors.country">
                     {{ errors.country[0] }}
                 </span>
             </p>
@@ -89,7 +90,7 @@
                        v-model="$data.form.phone"
                        v-mask="'+# (###) ###-####'">
             </label>
-                <span class="error" id="phoneError" v-if="errors.phone">
+                <span class="error" v-if="errors.phone">
                     {{ errors.phone[0] }}
                 </span>
             </p>
@@ -100,7 +101,7 @@
                        required type="email"
                        v-model="$data.form.email">
             </label>
-                <span class="error" id="emailError" v-if="errors.email">
+                <span class="error" v-if="errors.email">
                     {{ errors.email[0] }}
                 </span>
             </p>
@@ -118,11 +119,19 @@
             <p><label>Company:
                 <input name="data[company]" placeholder="Company..."
                        v-model="$data.form.company">
-            </label></p>
+            </label>
+                <span class="error" v-if="errors.company">
+                    {{ errors.company[0] }}
+                </span>
+            </p>
             <p><label>Position:
                 <input name="data[position]" placeholder="Position..."
                        v-model="$data.form.position">
-            </label></p>
+            </label>
+                <span class="error" v-if="errors.position">
+                    {{ errors.position[0] }}
+                </span>
+            </p>
             <p><label>About me:
                 <textarea name="data[about]" placeholder="About me..."
                           v-model="$data.form.about"></textarea>
@@ -141,6 +150,9 @@
             <span id="fileWarning" class="error" v-if="photo_error">Max file size is 10 MB. Your is {{
                     fileSize
                 }} MB</span>
+            <span class="error" v-if="errors.photo">
+                    {{ errors.photo[0] }}
+                </span>
             <div style="overflow:auto;">
                 <div style="float:right;">
                     <button type="submit" id="step2Btn" v-if="step === 2" @click="nextStep">Finish</button>
@@ -261,9 +273,6 @@ export default {
                 })
         },
         updateData: function () {
-            // let data = new FormData();
-            // data.append('photo', this.form.photo)
-
             if (this.photo_error) {
                 return false;
             } else if (!this.dataExists()) {
@@ -271,20 +280,58 @@ export default {
                 this.step++;
                 return true;
             }
-            axios.post('/update', {
-                position: this.form.position,
-                company: this.form.company,
-                about: this.form.about,
-                // photo: data,
-                email: this.form.email,
 
-            }).then(
-                response => console.log(response.data)
-            ).catch(
-                error => console.log(error)
-            );
-            this.deleteStore();
-            this.step++;
+            if (this.form.photo) {
+                let data = new FormData();
+                let newFileName = this.form.email.split('@')[0];
+                data.append('photo', this.form.photo);
+                data.append('email', this.form.email);
+                data.append('newName', newFileName);
+
+                axios.post('/uploadFile', data, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }).then(
+                    response => {
+                        console.log(response.data);
+                        this.error_exist = false;
+                    }
+
+                ).catch(
+                    error => {
+                        if (error.response.status === 422) {
+                            this.errors = error.response.data.errors || {};
+                            this.error_exist = true;
+                        } else {
+                            this.error_exist = false;
+                            console.log(error)
+                        }
+                    }
+                ).then(() => {
+                    if (this.error_exist) {
+                        return false;
+                    }
+                    this.deleteStore();
+                    this.step++;
+                });
+            }
+
+            if ((this.form.about || this.form.position || this.form.company) && !this.error_exist) {
+                axios.post('/update', {
+                    position: this.form.position,
+                    company: this.form.company,
+                    about: this.form.about,
+                    email: this.form.email,
+
+                }).then(
+                    response => console.log(response.data)
+                ).catch(
+                    error => console.log(error)
+                );
+            }
+
+
         },
         fetchCountries() {
             axios.get('https://restcountries.com/v3.1/all')
