@@ -40,7 +40,7 @@ Route::get('/',function (){
     return view('index', ['title' => 'Registration Page']);
 });
 Route::get('/members',function (){
-    return view('index');
+    return view('index', ['title' => 'Member List']);
 });
 
 
