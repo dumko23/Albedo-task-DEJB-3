@@ -1,27 +1,41 @@
 <template>
-    <div class="memberList">
-        <h1 v-if="$data.members.length === 0" style="text-align: center; margin-top: 3rem;">There's no registered
-            members yet!</h1>
-        <table class='member-table' v-for="member in $data.members">
-            <tr>
-                <td class='descr'>Photo</td>
-                <td><img :src='"../"+member.photo' alt='user photo'></td>
-            </tr>
-            <tr>
-                <td class='descr'>Full Name</td>
-                <td>{{ member.firstName }} {{ member.lastName }}</td>
-            </tr>
-            <tr>
-                <td class='descr'>Report Subject</td>
-                <td>{{ member.subject }}</td>
-            </tr>
-            <tr>
-                <td class='descr'>Email</td>
-                <td><a class="my-link" :href="`mailto:${member.email}`">{{ member.email }}</a></td>
-            </tr>
-        </table>
+    <div class="container">
+        <div class="memberList row">
+            <h1 v-if="$data.members.length === 0" style="text-align: center; margin-top: 3rem;">There's no registered
+                members yet!</h1>
 
+            <div class="col-md-12  justify-content-center  mb-3 " v-for="member in $data.members">
+                <table class='member-table align-self-center'>
+                    <tr class="img-tr">
+                        <td class='descr'>Photo</td>
+                        <td class="img-td"><img class="img-thumbnail img-fluid" :src='"../"+member.photo'
+                                                alt='user photo'></td>
+                    </tr>
+                    <tr>
+                        <td class='descr'>Full Name</td>
+                        <td class="td-content">{{ member.firstName }} {{ member.lastName }}</td>
+                    </tr>
+                    <tr>
+                        <td class='descr'>Report Subject</td>
+                        <td class="td-content">{{ member.subject }}</td>
+                    </tr>
+                    <tr>
+                        <td class='descr'>Email</td>
+                        <td class="td-content"><a class="dropdown-item" :href="`mailto:${member.email}`">{{
+                                member.email
+                            }}</a></td>
+                    </tr>
+                </table>
+                <button class="w-100">Edit Member Data</button>
+            </div>
+
+            <!--        <tr v-for="(value, name) in tdNames">-->
+            <!--            <td class='descr'>{{ value }}</td>-->
+            <!--            <td>{{ member[name] || 'No data' }}</td>-->
+            <!--        </tr>-->
+        </div>
     </div>
+
 </template>
 
 <script>
@@ -29,7 +43,22 @@ export default {
     name: "AdminMembersList",
     data() {
         return {
-            members: {}
+            members: {},
+            tdNames: {
+                memberId: "Member's id in DataBase: ",
+                created_at: 'Member created at: ',
+                updated_at: 'Member info updated at: ',
+                firstName: 'First Name: ',
+                lastName: 'Last Name: ',
+                birthDate: 'Birth Date: ',
+                country: 'Country: ',
+                phone: 'Phone: ',
+                email: 'Email: ',
+                subject: 'Subject: ',
+                company: 'Company: ',
+                position: 'Position: ',
+                about: 'About: ',
+            }
         }
     },
     beforeMount() {
@@ -44,6 +73,10 @@ export default {
 </script>
 
 <style scoped>
+html {
+    box-sizing: border-box;
+}
+
 .my-link {
     text-decoration: none;
     color: black;
@@ -60,30 +93,44 @@ export default {
     margin-top: 2rem;
 }
 
-.member-table {
-    border: 1px solid black;
-    margin: 5px auto;
-    width: 70%;
-}
+/*.member-table {*/
+/*    border: 1px solid black;*/
+/*    margin-top: 5px;*/
+/*    width: 100%;*/
+
+/*}*/
+
 table {
     width: 100%;
     border-collapse: collapse;
     border: 2px solid rgb(200, 200, 200);
     letter-spacing: 1px;
     font-size: 0.8rem;
+    height: 500px;
+    box-sizing: border-box;
 }
 
 td, th {
     border: 1px solid rgb(190, 190, 190);
-    padding: 10px 20px;
+    /*padding: 10px 10px;*/
+    /*max-height: 50px;*/
 }
 
-th {
-    background-color: rgb(235, 235, 235);
-}
+/*.img-td{*/
+/*    height: 300px;*/
+/*}*/
+
+/*th {*/
+/*    background-color: rgb(235, 235, 235);*/
+/*}*/
 
 td {
     text-align: center;
+}
+
+.td-content {
+    overflow-x: hidden;
+    word-break: break-word;
 }
 
 .descr {
@@ -91,7 +138,12 @@ td {
 }
 
 img {
-    width: 300px;
+    /*width: auto;*/
+    max-width: 300px;
     height: auto;
+}
+
+.img-tr {
+    height: 300px;
 }
 </style>
