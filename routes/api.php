@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\MembersAdminController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,4 +20,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+Route::get('getMembers', [MemberController::class, 'getMembers']);
+Route::get('getMembersCount', [MemberController::class, 'getMembersCount']);
 

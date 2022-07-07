@@ -1,5 +1,13 @@
 {
     "/js/app.js": "/js/app.js",
     "/css/app.css": "/css/app.css",
-    "/css/members.css": "/css/members.css"
+    "/css/members.css": "/css/members.css",
+    "/default-image.png": "/default-image.png",
+    "/favicon.ico": "/favicon.ico",
+    "/images/1657115586-parhomenko.dmit.jpg": "/images/1657115586-parhomenko.dmit.jpg",
+    "/images/1657117643-parhomenko.dmit.png": "/images/1657117643-parhomenko.dmit.png",
+    "/images/1657121285-parhomenko.d1mit.jpg": "/images/1657121285-parhomenko.d1mit.jpg",
+    "/index.php": "/index.php",
+    "/mix-manifest.json": "/mix-manifest.json",
+    "/robots.txt": "/robots.txt"
 }

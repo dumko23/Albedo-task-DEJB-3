@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\MembersAdminController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\LoginController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,18 +20,30 @@ use Illuminate\Support\Facades\Route;
 //Route::get('/', function () {
 //    return view('index');
 //});
-Route::get('getMembers', [MemberController::class, 'getMembers']);
-Route::get('getMembersCount', [MemberController::class, 'getMembersCount']);
-Route::get('/{any}',function (){
+Auth::routes();
+
+
+
+Route::get('/admin', function (){
+    return view('home');
+});
+Route::get('/admin/dashboard', function () {
+    return view('admin-dashboard', ['title' => 'Admin Page']);
+})->middleware('auth')->name('Admin Page');
+Route::get('getAllMembersData', [MembersAdminController::class, 'getAllMembersData'])
+    ->middleware('auth');
+
+
+
+
+Route::get('/',function (){
+    return view('index', ['title' => 'Registration Page']);
+});
+Route::get('/members',function (){
     return view('index');
-})->where('any', '.*');
+});
 
-//Route::get('/members', [MemberController::class, 'index'])
-//    ->name('members');
 
-//Auth::routes();
-//
-//Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::post('send', [MemberController::class, 'send']);
 Route::post('update', [MemberController::class, 'update']);

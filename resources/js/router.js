@@ -2,6 +2,7 @@ import vueRouter from 'vue-router';
 import Vue from 'vue';
 import Index from "./views/Index";
 import Members from "./views/Members";
+import Admin from "./views/Admin";
 
 Vue.use(vueRouter);
 
@@ -16,6 +17,11 @@ const routes = [
         component: Members,
         meta: { transition: 'slide-right' },
     },
+    {
+        path: '/admin/dashboard',
+        component: Admin,
+        meta: { transition: 'slide-right' },
+    }
 ];
 
 export default new vueRouter({

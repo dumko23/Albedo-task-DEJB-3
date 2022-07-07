@@ -4,7 +4,10 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
+
             <div class="card">
+
+
                 <div class="card-header">{{ __('Login') }}</div>
 
                 <div class="card-body">
@@ -67,6 +70,9 @@
                     </form>
                 </div>
             </div>
+            <h4 class="text-center m-3">This is an Admin page.
+                If you don't have a permission - please,
+                leave this page!</h4>
         </div>
     </div>
 </div>

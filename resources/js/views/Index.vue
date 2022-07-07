@@ -29,7 +29,7 @@ export default {
     },
     methods: {
         fetchMembersCount: function () {
-            axios.get('/getMembersCount')
+            axios.get('/api/getMembersCount')
                 .then(res => {
                         this.members = res.data;
                     }

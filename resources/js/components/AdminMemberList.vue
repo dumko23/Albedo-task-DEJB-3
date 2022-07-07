@@ -5,7 +5,7 @@
         <table class='member-table' v-for="member in $data.members">
             <tr>
                 <td class='descr'>Photo</td>
-                <td><img :src='member.photo' alt='user photo'></td>
+                <td><img :src='"../"+member.photo' alt='user photo'></td>
             </tr>
             <tr>
                 <td class='descr'>Full Name</td>
@@ -26,18 +26,19 @@
 
 <script>
 export default {
-    name: "MemberList",
+    name: "AdminMembersList",
     data() {
         return {
             members: {}
         }
     },
     beforeMount() {
-        axios.get('/api/getMembers')
+        axios.get('/getAllMembersData')
             .then(res => {
                     this.members = res.data;
                 }
             );
+        console.log(window.location.href)
     }
 }
 </script>
