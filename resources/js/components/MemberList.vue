@@ -65,7 +65,7 @@ export default {
     width: 70%;
 }
 table {
-    width: 100%;
+    width: 70%;
     border-collapse: collapse;
     border: 2px solid rgb(200, 200, 200);
     letter-spacing: 1px;
@@ -92,5 +92,6 @@ td {
 img {
     width: 300px;
     height: auto;
+    border-radius: 5px;
 }
 </style>
