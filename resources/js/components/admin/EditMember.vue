@@ -1,0 +1,386 @@
+<template>
+    <div>
+        <div>
+
+            <form
+                class="editForm"
+                name="form"
+                @submit.prevent=""
+                method="post"
+                enctype="multipart/form-data">
+
+                <section class="form-group">
+                    <div><span class="required">*</span> - Required</div>
+                    <div>
+                        <label>First name <span class="minLabel">(Only letters and '`- symbols allowed)</span><span
+                            class="required">*</span>:
+                            <input id="firstNameIsValid"
+                                   class="form-control"
+                                   name="data[firstName]"
+                                   placeholder="First name..."
+                                   pattern="^[.\D]{1,30}$"
+                                   maxlength="30" required
+                                   @keydown.capture="noDigits($event)"
+                                   v-model="$data.form.firstName">
+                        </label>
+                        <span class="error" v-if="errors.firstName">
+                            {{ errors.firstName[0] }}
+                         </span>
+                    </div>
+                    <p>
+                        <label>Last name <span class="minLabel">(Only letters and '`- symbols allowed)</span><span
+                            class="required">*</span>:
+                            <input id="lastNameIsValid"
+                                   class="form-control"
+                                   name="data[lastName]"
+                                   placeholder="Last name..."
+                                   pattern="^[.\D]{1,30}$"
+                                   maxlength="30" required
+                                   @keydown.capture="noDigits($event)"
+                                   v-model="$data.form.lastName">
+                        </label>
+                        <span class="error" v-if="errors.lastName">
+                            {{ errors.lastName[0] }}
+                        </span>
+                    </p>
+                    <p>
+                        <label>Birth date<span class="required">*</span>:
+                            <input id="dateIsValid"
+                                   class="form-control"
+                                   name="data[birthDate]"
+                                   placeholder="Birthdate..."
+                                   min="1900-01-01"
+                                   max="2005-01-01"
+                                   type="date"
+                                   required
+                                   v-model="$data.form.birthDate">
+                        </label>
+                        <span class="error" v-if="errors.birthDate">
+                            {{ errors.birthDate[0] }}
+                        </span>
+                    </p>
+                    <p>
+                        <label>Report subject<span class="required">*</span>:
+                            <input id="subjectIsValid"
+                                   class="form-control"
+                                   name="data[subject]"
+                                   placeholder="Repost subject..."
+                                   required
+                                   v-model="$data.form.subject">
+                        </label>
+                        <span class="error" v-if="errors.subject">
+                            {{ errors.subject[0] }}
+                        </span>
+                    </p>
+                    <p>
+                        <label>Country<span class="required">*</span>:
+                            <select class="country form-control"
+                                    id="countryIsValid"
+                                    name="data[country]"
+                                    required
+                                    v-model="$data.form.country">
+                                <option selected disabled="disabled" value="null">Choose Country</option>
+                                <option v-for="country in $data.countries" :value="country">{{ country }}</option>
+                            </select>
+                        </label>
+                        <span class="error" v-if="errors.country">
+                            {{ errors.country[0] }}
+                        </span>
+                    </p>
+                    <p>
+                        <label>Phone number
+                            <span class="minLabel">(in the following format: "+1 (555) 555-5555")</span>
+                            <span class="required">*</span>:
+                            <input id="phoneIsValid"
+                                   class="form-control"
+                                   name="data[phone]"
+                                   minlength="17"
+                                   placeholder="+1 (555) 555-5555"
+                                   required type="tel"
+                                   v-model="$data.form.phone"
+                                   v-mask="'+# (###) ###-####'">
+                        </label>
+                        <span class="error" v-if="errors.phone">
+                    {{ errors.phone[0] }}
+                </span>
+                    </p>
+                    <p>
+                        <label>Email<span class="required">*</span>:
+                            <input id="emailIsValid"
+                                   class="form-control"
+                                   name="data[email]"
+                                   placeholder="your.email@example.com"
+                                   required type="email"
+                                   v-model="$data.form.email">
+                        </label>
+                        <span class="error" v-if="errors.email">
+                            {{ errors.email[0] }}
+                        </span>
+                    </p>
+                    <p>
+                        <label>Company:
+                            <input name="data[company]"
+                                   class="form-control"
+                                   placeholder="Company..."
+                                   v-model="$data.form.company">
+                        </label>
+                        <span class="error" v-if="errors.company">
+                            {{ errors.company[0] }}
+                        </span>
+                    </p>
+                    <p>
+                        <label>Position:
+                            <input name="data[position]"
+                                   class="form-control"
+                                   placeholder="Position..."
+                                   v-model="$data.form.position">
+                        </label>
+                        <span class="error" v-if="errors.position">
+                            {{ errors.position[0] }}
+                        </span>
+                    </p>
+                    <p>
+                        <label>About me:
+                            <textarea name="data[about]"
+                                      class="form-control"
+                                      placeholder="About me..."
+                                      v-model="$data.form.about"></textarea>
+                        </label></p>
+                    <input type="hidden" name="MAX_FILE_SIZE" value="10485760"/>
+                    <p>
+                        <label>My Photo (.png, .jpg, .jpeg - up to 10Mb):
+                            <input id="imgLoad"
+                                   class="form-control"
+                                   name="photo"
+                                   type="file"
+                                   accept=".png, .jpg, .jpeg"
+                                   @change="uploads">
+                        </label>
+                    </p>
+                    <span v-if="$data.form.photo">Extension: {{ extension }}</span>
+                    <br>
+                    <span v-if="$data.form.photo">Size: {{ fileSize }} Mb</span>
+                    <span id="fileWarning" class="error" v-if="photo_error">Max file size is 10 MB. Your is {{
+                            fileSize
+                        }} MB</span>
+                    <span class="error" v-if="errors.photo">
+                    {{ errors.photo[0] }}
+                </span>
+
+                </section>
+
+
+            </form>
+        </div>
+    </div>
+</template>
+
+<script>
+
+export default {
+    name: "EditMember",
+
+    data() {
+        return {
+            step: 1,
+            totalStep: 3,
+            form: {
+                firstName: null,
+                lastName: null,
+                birthDate: null,
+                country: null,
+                subject: null,
+                phone: null,
+                email: null,
+                position: null,
+                company: null,
+                about: null,
+                photo: null,
+
+            },
+            extension: null,
+            size: null,
+            countries: [],
+            errors: [],
+            error_exist: false,
+            photo_error: false,
+            fileSize: 0,
+        }
+    },
+    methods: {
+        nextStep: function () {
+            if (this.step === 1) {
+                this.sendData();
+                this.trackChanges();
+            } else if (this.step === 2) {
+                this.updateData();
+            }
+        },
+        toFirstStep: function () {
+            this.step = 1;
+        },
+        noDigits: function (event) {
+            if ('1234567890'.indexOf(event.key) !== -1) {
+                event.preventDefault()
+            }
+        },
+        uploads: function (event) {
+            this.form.photo = event.target.files['0'];
+            this.getFileInfo();
+            this.validateUpload();
+        },
+        getFileInfo: function () {
+            let ext = "Couldn't resolve";
+            const parts = this.form.photo.name.split('.')
+            if (parts.length > 1) {
+                ext = '.' + parts.pop()
+            }
+            this.extension = ext;
+            this.fileSize = (this.form.photo.size / 1048576).toFixed(2);
+        },
+        sendData: function () {
+            axios.post('/send', {
+                firstName: this.form.firstName,
+                lastName: this.form.lastName,
+                birthDate: this.form.birthDate,
+                country: this.form.country,
+                subject: this.form.subject,
+                phone: this.form.phone,
+                email: this.form.email,
+            })
+                .then(
+                    response => {
+                        console.log(response)
+                        this.error_exist = false;
+                    }
+                ).catch(
+                error => {
+                    if (error.response.status === 422) {
+                        this.errors = error.response.data.errors || {};
+                        this.error_exist = true;
+                    } else {
+                        this.error_exist = false;
+                        console.log(error)
+                    }
+
+                })
+                .then(() => {
+                    if (this.error_exist) {
+                        return false;
+                    }
+                    this.persist();
+                    this.countries = [];
+                    this.step++;
+                })
+        },
+        updateData: function () {
+            if (this.photo_error) {
+                return false;
+            } else if (!this.dataExists()) {
+                this.deleteStore();
+                this.step++;
+                return true;
+            }
+
+            if (this.form.photo
+                || this.form.about
+                || this.form.company
+                || this.form.position) {
+                let data = new FormData();
+                let newFileName = this.form.email.split('@')[0];
+
+                data.append('newName', newFileName);
+                let array = ['photo', 'email', 'position', 'company', 'about']
+                for (let i = 0; i < array.length; i++) {
+                    data.append(array[i], this.form[array[i]]);
+                }
+
+                axios.post('/update', data, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }).then(
+                    response => {
+                        console.log(response.data);
+                        this.error_exist = false;
+                    }
+                ).catch(
+                    error => {
+                        if (error.response.status === 422) {
+                            this.errors = error.response.data.errors || {};
+                            this.error_exist = true;
+                        } else {
+                            this.error_exist = false;
+                            console.log(error)
+                        }
+                    }
+                ).then(() => {
+                    if (this.error_exist) {
+                        return false;
+                    }
+                    this.deleteStore();
+                    this.step++;
+                });
+            }
+
+        },
+        fetchCountries() {
+            axios.get('https://restcountries.com/v3.1/all')
+                .then(res => {
+                    res = new Array(...res.data)
+                    return res;
+                })
+                .then(data => {
+                        data.sort((a, b) => (a.name.common > b.name.common) ? 1 : -1)
+                            .forEach(country => {
+                                this.countries.push(country.name.common);
+                            })
+                    }
+                )
+        },
+        trackChanges() {
+            this.$emit('changeStep', {
+                step: this.step
+            })
+        },
+        persist() {
+            localStorage.step = 2;
+            localStorage.email = this.form.email;
+        },
+        deleteStore() {
+            localStorage.clear()
+
+        },
+        validateUpload() {
+            if (this.form.photo && this.form.photo.size > 10485760) {
+                this.fileSize = (this.form.photo.size / 1048576).toFixed(2);
+                this.photo_error = true;
+                return false
+            } else {
+                this.photo_error = false;
+                return true
+            }
+        },
+        dataExists() {
+            return !(!this.form.photo &&
+                !this.form.about &&
+                !this.form.company &&
+                !this.form.position);
+        }
+    },
+    beforeMount() {
+        if (localStorage.email) {
+            this.form.email = localStorage.email;
+        }
+        if (localStorage.step) {
+            this.step = +localStorage.step
+        } else {
+            this.fetchCountries();
+        }
+    },
+}
+</script>
+
+<style scoped>
+
+</style>

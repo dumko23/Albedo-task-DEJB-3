@@ -1,7 +1,9 @@
 <template>
     <div class="container">
         <div class="memberList">
-            <h1 v-if="$data.members.length === 0" style="text-align: center; margin-top: 3rem;">There's no registered
+            <h1 v-if="$data.members.length === 0"
+                class="mb-5"
+                style="text-align: center; margin-top: 3rem;">There's no registered
                 members yet!</h1>
 
             <div class="w-75 justify-content-center align-self-center mx-auto mb-5 " v-for="member in $data.members">
@@ -29,6 +31,7 @@
                 <a class="w-100 dropdown-item data-link" :href="'/admin/member-info/'+member.memberId">Show full data</a>
             </div>
         </div>
+        <a v-if="this.members.length > 1" style="position: fixed; bottom: 0; left: 0;" class="my-link navbar-brand text-dark back-link" href="#">To the top</a>
     </div>
 
 </template>
@@ -60,7 +63,6 @@ export default {
         axios.get('/getMembersInfo')
             .then(res => {
                     this.members = res.data;
-                console.log('/admin/member-info?'+this.members[0].memberId)
                 }
             );
     }
@@ -129,5 +131,14 @@ a{
 
 .email-link:hover {
     background-color: #dee2e6;
+}
+
+.back-link {
+    padding: 1.1rem 2rem;
+}
+
+.back-link:hover {
+    background-color: #dee2e6;
+    cursor: pointer;
 }
 </style>

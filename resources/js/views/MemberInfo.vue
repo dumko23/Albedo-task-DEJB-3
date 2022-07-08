@@ -1,20 +1,25 @@
 <template>
     <div>
-        <div class="mt-3">
-            <a class="navbar-brand text-dark back-link" @click="$router.go(-1)">Back</a>
+
+        <div class="border-bottom pb-3">
+            <div class="mt-3 d-inline-block">
+                <a class="navbar-brand text-dark back-link" @click="$router.go(-1)">Back</a>
+            </div>
+            <button class="edit-btn" @click="edit = true">Edit</button>
         </div>
+    <edit-member v-if="edit === true"></edit-member>
 
         <div class="memberList">
             <div class="w-75 justify-content-center align-self-center mx-auto mb-5 ">
-                <table v-for="member in $data.members">
+                <table v-for="memberInfo in $data.member">
                     <tr class="img-tr">
                         <td class='descr'>Photo</td>
-                        <td class="img-td"><img class="img-thumbnail img-fluid" :src='"../"+member.photo'
+                        <td class="img-td"><img class="img-thumbnail img-fluid" :src='"../../"+memberInfo.photo'
                                                 alt='user photo'></td>
                     </tr>
                     <tr v-for="(value, name) in tdNames">
                         <td class='descr'>{{ value }}</td>
-                        <td>{{ member[name] || 'No data' }}</td>
+                        <td>{{ memberInfo[name] || 'No data' }}</td>
                     </tr>
                 </table>
             </div>
@@ -23,11 +28,17 @@
 </template>
 
 <script>
+
+import EditMember from "../components/admin/EditMember";
+
 export default {
     name: "MemberInfo",
+    components: {EditMember},
+
     data() {
         return {
-            members: {},
+            member: {},
+            edit: false,
             tdNames: {
                 memberId: "Member's id in DataBase: ",
                 created_at: 'Member created at: ',
@@ -48,9 +59,12 @@ export default {
     beforeMount() {
         axios.get(`/getMemberFullData/:${this.$route.params.memberId}`)
             .then(res => {
-                    this.members = res.data;
+                    this.member = res.data;
+                this.member[0]['created_at'] = new Date(this.member[0]['created_at']);
+                this.member[0]['updated_at'] = new Date(this.member[0]['updated_at']);
                 }
             );
+
     }
 }
 </script>
@@ -83,19 +97,14 @@ td {
     text-align: center;
 }
 
-.td-content {
-    overflow-x: hidden;
-    word-break: break-word;
-}
-
 .descr {
     width: 25%;
 }
 
 img {
-    max-width: 100px;
+    max-width: 300px;
     height: auto;
-    max-height: 150px;
+    max-height: 350px;
 }
 
 .img-tr {
@@ -106,17 +115,24 @@ a {
     text-align: center;
 }
 
-.data-link {
-    border: 2px solid rgb(200, 200, 200);
-    border-top: none;
-}
-
 .back-link {
-    padding: 2px 5px;
+    padding: 1.1rem 2rem 1.2rem;
 }
 
 .back-link:hover {
     background-color: #dee2e6;
     cursor: pointer;
+}
+
+.edit-btn {
+    margin: 0;
+    padding: 1.1rem 2rem 1.3rem;
+    border: none;
+    background-color: #ffffff;
+    float: right;
+}
+
+.edit-btn:hover {
+    background-color: #dee2e6;
 }
 </style>

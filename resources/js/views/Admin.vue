@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import AdminMemberList from "../components/AdminMemberList";
+import AdminMemberList from "../components/admin/AdminMemberList";
 export default {
     name: "Admin",
     components: {AdminMemberList}

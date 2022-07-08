@@ -7,7 +7,7 @@
                 <div class="card">
                     @auth
                         <h4 class="text-center m-3">Welcome to the Admin Page, {{ Auth::user()->name }}</h4>
-                        <a class="dropdown-item text-center" href="/admin/dashboard">Dashboard</a>
+                        <a class="dropdown-item text-center py-3 border-top " href="/admin/dashboard">Dashboard</a>
                     @else
                         <h4 class="text-center m-3">This is an Admin page.
                             If you don't have a permission - please,

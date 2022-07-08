@@ -20,7 +20,7 @@ window.Vue = require('vue').default;
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 // Vue.component('example-component', require('./components/ExampleComponent.vue').default);
-Vue.component('map-content', require('./components/MapContent.vue').default);
+Vue.component('map-content', require('./components/form/MapContent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

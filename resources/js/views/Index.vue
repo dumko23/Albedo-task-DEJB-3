@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import RegistrationForm from "../components/RegistrationForm";
+import RegistrationForm from "../components/form/RegistrationForm";
 
 export default {
     name: "Index",

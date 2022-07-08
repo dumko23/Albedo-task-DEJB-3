@@ -168,7 +168,7 @@
             <social-links :social-message="this.$attrs['social-message']"></social-links>
 
             <div class="finishAnchor">
-                <a class="my-link" href="/" @click="toFirstStep">Back to 1st step</a>
+                <a class="my-link" href="/public" @click="toFirstStep">Back to 1st step</a>
             </div>
         </section>
     </form>
