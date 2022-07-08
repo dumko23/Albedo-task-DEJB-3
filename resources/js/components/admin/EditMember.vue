@@ -1,12 +1,16 @@
 <template>
-    <div>
-        <div class="container w-75">
-            <form
-                class="editForm"
-                name="form"
-                @submit.prevent=""
-                method="post"
-                enctype="multipart/form-data">
+
+    <div class="card w-75 mx-auto py-4">
+        <div class="container ">
+            <button class="icon-right" @click="this.toggleEdit" data-dismiss="modal">
+                <font-awesome-icon icon="fa-solid fa-xmark"/>
+            </button>
+            <form v-if="this.$props.member"
+                  class="editForm"
+                  name="form"
+                  @submit.prevent=""
+                  method="post"
+                  enctype="multipart/form-data">
 
                 <p><span class="required">*</span> - Required</p>
                 <div class="form-group">
@@ -21,7 +25,7 @@
                            pattern="^[.\D]{1,30}$"
                            maxlength="30" required
                            @keydown.capture="noDigits($event)"
-                           v-model="member.firstName">
+                           v-model="this.$props.member.firstName">
                     <span class="error" v-if="errors.firstName">
                             {{ errors.firstName[0] }}
                          </span>
@@ -163,6 +167,8 @@
             </form>
         </div>
     </div>
+
+
 </template>
 
 <script>
@@ -170,24 +176,12 @@
 export default {
     name: "EditMember",
     props: {
-        member: ''
+        member: '',
+        edit: false
     },
     data() {
         return {
-            formData: {
-                firstName: null,
-                lastName: null,
-                birthDate: null,
-                country: null,
-                subject: null,
-                phone: null,
-                email: null,
-                position: null,
-                company: null,
-                about: null,
-                photo: null,
-
-            },
+            mutableEdit: JSON.parse(this.edit),
             extension: null,
             size: null,
             countries: [],
@@ -322,14 +316,6 @@ export default {
                 step: this.step
             })
         },
-        persist() {
-            localStorage.step = 2;
-            localStorage.email = this.form.email;
-        },
-        deleteStore() {
-            localStorage.clear()
-
-        },
         validateUpload() {
             if (this.member.photo && this.member.photo.size > 10485760) {
                 this.fileSize = (this.member.photo.size / 1048576).toFixed(2);
@@ -340,26 +326,35 @@ export default {
                 return true
             }
         },
-        dataExists() {
-            return !(!this.form.photo &&
-                !this.form.about &&
-                !this.form.company &&
-                !this.form.position);
+        toggleEdit() {
+            this.mutableEdit = false;
+            this.$emit("hideModal", this.mutableEdit);
         }
     },
     beforeMount() {
-            this.fetchCountries();
+        this.fetchCountries();
+
     },
 }
 </script>
 
 <style scoped>
 
-.delete-btn{
+.delete-btn {
 
 }
 
 .delete-btn:hover {
+    background-color: #dee2e6;
+}
+
+.icon-right {
+    border: none;
+    background-color: #ffffff;
+    float: right;
+}
+
+.icon-right:hover {
     background-color: #dee2e6;
 }
 </style>

@@ -5,13 +5,22 @@
             <div class="mt-3 d-inline-block">
                 <a class="navbar-brand text-dark back-link" @click="$router.go(-1)">Back</a>
             </div>
-            <button class="edit-btn" >Delete</button>
-            <button class="edit-btn" @click="edit = true">Edit</button>
-            <button v-if="$data.memberShow === true" class="edit-btn" @click=" this.toggleShow">Hide</button>
-            <button v-if="$data.memberShow === false" class="edit-btn" @click="this.toggleShow">Show</button>
+            <button class="edit-btn">Delete</button>
+            <button class="edit-btn"  data-toggle="modal" data-target="#exampleModal">Edit</button>
+            <button v-if="$data.memberShow === true" class="edit-btn" @click=" this.toggleShow">Hide Member</button>
+            <button v-if="$data.memberShow === false" class="edit-btn" @click="this.toggleShow">Show Member</button>
         </div>
-        <!--    <edit-member v-if="edit === true"></edit-member>-->
-<!--        <edit-member :member="this.member[0]"></edit-member>-->
+
+
+        <b-button v-b-modal.modal-center>Launch demo modal</b-button>
+
+        <b-modal id="modal-center" centered  title="BootstrapVue">
+            <p class="my-4">Hello from modal!</p>
+        </b-modal>
+
+        <!--                        <edit-member  v-if="edit === true" :edit="this.edit" :member="this.member[0]"-->
+        <!--                        @hideModal="toggleEditParent"></edit-member>-->
+
 
         <div class="memberList">
             <div class="w-75 justify-content-center align-self-center mx-auto mb-5 ">
@@ -61,9 +70,12 @@ export default {
             }
         }
     },
-    methods:{
-        toggleShow(){
+    methods: {
+        toggleShow() {
             this.memberShow = this.memberShow !== true;
+        },
+        toggleEditParent(data) {
+            this.edit = data
         }
     },
     beforeMount() {
