@@ -1,41 +1,30 @@
 <template>
-    <div class="container">
-        <div class="memberList">
-            <h1 v-if="$data.members.length === 0" style="text-align: center; margin-top: 3rem;">There's no registered
-                members yet!</h1>
+    <div>
+        <div class="mt-3">
+            <a class="navbar-brand text-dark back-link" @click="$router.go(-1)">Back</a>
+        </div>
 
-            <div class="w-75 justify-content-center align-self-center mx-auto mb-5 " v-for="member in $data.members">
-                <table class='member-table align-self-center'>
+        <div class="memberList">
+            <div class="w-75 justify-content-center align-self-center mx-auto mb-5 ">
+                <table v-for="member in $data.members">
                     <tr class="img-tr">
                         <td class='descr'>Photo</td>
                         <td class="img-td"><img class="img-thumbnail img-fluid" :src='"../"+member.photo'
                                                 alt='user photo'></td>
                     </tr>
-                    <tr>
-                        <td class='descr'>Full Name</td>
-                        <td class="td-content">{{ member.firstName }} {{ member.lastName }}</td>
-                    </tr>
-                    <tr>
-                        <td class='descr'>Country</td>
-                        <td class="td-content">{{ member.country }}</td>
-                    </tr>
-                    <tr>
-                        <td class='descr'>Email</td>
-                        <td class="td-content"><a class="navbar-brand text-dark email-link" :href="`mailto:${member.email}`">{{
-                                member.email
-                            }}</a></td>
+                    <tr v-for="(value, name) in tdNames">
+                        <td class='descr'>{{ value }}</td>
+                        <td>{{ member[name] || 'No data' }}</td>
                     </tr>
                 </table>
-                <a class="w-100 dropdown-item data-link" :href="'/admin/member-info/'+member.memberId">Show full data</a>
             </div>
         </div>
     </div>
-
 </template>
 
 <script>
 export default {
-    name: "AdminMembersList",
+    name: "MemberInfo",
     data() {
         return {
             members: {},
@@ -57,10 +46,9 @@ export default {
         }
     },
     beforeMount() {
-        axios.get('/getMembersInfo')
+        axios.get(`/getMemberFullData/:${this.$route.params.memberId}`)
             .then(res => {
                     this.members = res.data;
-                console.log('/admin/member-info?'+this.members[0].memberId)
                 }
             );
     }
@@ -105,29 +93,30 @@ td {
 }
 
 img {
-    max-width: 300px;
+    max-width: 100px;
     height: auto;
-    max-height: 300px;
+    max-height: 150px;
 }
 
 .img-tr {
     height: 300px;
 }
 
-a{
+a {
     text-align: center;
 }
 
-.data-link{
+.data-link {
     border: 2px solid rgb(200, 200, 200);
     border-top: none;
 }
 
-.email-link{
-    font-size: 1rem;
+.back-link {
+    padding: 2px 5px;
 }
 
-.email-link:hover {
+.back-link:hover {
     background-color: #dee2e6;
+    cursor: pointer;
 }
 </style>

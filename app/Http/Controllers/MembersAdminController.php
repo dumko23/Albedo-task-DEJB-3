@@ -8,15 +8,15 @@ use Illuminate\Http\Request;
 
 class MembersAdminController extends Controller
 {
-    public function getAllMembersData(): Collection
+    public function getMemberFullData($memberId): Collection
     {
-        return Member::all();
+        return Member::all()->where('memberId', '=', $memberId);
 
     }
 
-    public function getMembers(): Collection
+    public function getMembersInfo(): Collection
     {
-        return Member::all(['firstName', 'lastName', 'subject', 'photo', 'email']);
+        return Member::all(['firstName', 'lastName', 'country', 'photo', 'email', 'memberId']);
 
     }
 }

@@ -30,7 +30,12 @@ Route::get('/admin', function (){
 Route::get('/admin/dashboard', function () {
     return view('admin-dashboard', ['title' => 'Admin Page']);
 })->middleware('auth')->name('Admin Page');
-Route::get('getAllMembersData', [MembersAdminController::class, 'getAllMembersData'])
+Route::get('/admin/member-info/{memberId}', function () {
+    return view('admin-dashboard', ['title' => 'Admin / Member Info']);
+})->middleware('auth')->name('Member Info');
+Route::get('getMembersInfo', [MembersAdminController::class, 'getMembersInfo'])
+    ->middleware('auth');
+Route::get('getMemberFullData/:{memberId}', [MembersAdminController::class, 'getMemberFullData'])
     ->middleware('auth');
 
 
