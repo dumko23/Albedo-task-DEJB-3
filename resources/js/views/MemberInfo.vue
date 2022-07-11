@@ -5,16 +5,24 @@
             <div class="mt-3 d-inline-block">
                 <a class="navbar-brand text-dark back-link" @click="$router.go(-1)">Back</a>
             </div>
-            <button class="edit-btn">Delete</button>
-            <button class="edit-btn" @click="edit = true" >Edit</button>
+            <button class="edit-btn" @click="confirm = true">Delete</button>
+            <button class="edit-btn" @click="edit = true">Edit</button>
             <button v-if="$data.memberShow === true" class="edit-btn" @click=" this.toggleShow">Hide Member</button>
             <button v-if="$data.memberShow === false" class="edit-btn" @click="this.toggleShow">Show Member</button>
         </div>
 
 
-        <edit-member v-if="edit === true" :edit="this.edit" :member="this.member[0]"
+        <edit-member v-if="edit === true"
+                     :edit="this.edit"
+                     :member="this.member[0]"
                      @hideModal="toggleEditParent"></edit-member>
 
+
+        <confirm-modal v-if="confirm === true"
+                       :message="'Delete this Member'"
+                       :prop="'deleteMember'"
+                       @cancelModal="deleteMember"
+                       @confirmModal="deleteMember"></confirm-modal>
 
         <div class="memberList">
             <div class="w-75 justify-content-center align-self-center mx-auto mb-5 ">
@@ -37,15 +45,18 @@
 <script>
 
 import EditMember from "../components/admin/EditMember";
+import ConfirmModal from "../components/admin/ConfirmModal";
+import router from "../router";
 
 export default {
     name: "MemberInfo",
-    components: {EditMember},
+    components: {ConfirmModal, EditMember},
 
     data() {
         return {
             memberShow: true,
             member: {},
+            confirm: false,
             edit: false,
             tdNames: {
                 memberId: "Member's id in DataBase: ",
@@ -70,6 +81,27 @@ export default {
         },
         toggleEditParent(data) {
             this.edit = data
+            axios.get(`/getMemberFullData/:${this.$route.params.memberId}`)
+                .then(res => {
+                        this.member = res.data;
+                        this.member[0]['created_at'] = new Date(this.member[0]['created_at']);
+                        this.member[0]['updated_at'] = new Date(this.member[0]['updated_at']);
+                    }
+                );
+        },
+        deleteMember(data) {
+            this.confirm = false;
+            if (data === true) {
+                axios.post('/deleteMember',
+                    this.member.email)
+                    .then(
+                        response => console.log(response)
+                    ).catch(
+                    error => console.log(error)
+                ).then(() => {
+                    router.push("/admin/dashboard")
+                })
+            }
         }
     },
     beforeMount() {

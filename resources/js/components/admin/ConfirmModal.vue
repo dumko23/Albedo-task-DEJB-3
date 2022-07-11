@@ -1,5 +1,5 @@
 <template>
-    <div class=" background-modal d-flex justify-content-center">
+    <div class="background-modal d-flex justify-content-center">
         <div class="content-modal card w-50 h-25 my-4 py-2 " @click.stop>
             <div class="container my-auto">
                 <h4>Are you sure you want to {{ message }}?</h4>
@@ -27,6 +27,7 @@ export default {
         exit: '',
         deletePhoto: '',
         edit: '',
+        deleteMember: ''
     },
     data() {
         return {
@@ -54,5 +55,19 @@ export default {
 </script>
 
 <style scoped>
+.background-modal {
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+}
 
+.content-modal {
+    overflow: auto;
+}
 </style>

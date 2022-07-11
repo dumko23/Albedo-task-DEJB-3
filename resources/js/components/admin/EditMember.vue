@@ -221,7 +221,6 @@ export default {
             photo_error: false,
             fileSize: 0,
             memberToEdit: {},
-            photo: '',
             btnActive: false,
         }
     },
@@ -259,8 +258,6 @@ export default {
                 if (!['memberId', 'created_at', 'updated_at'].includes(array[i]))
                 data.append(array[i], this.memberToEdit[array[i]]);
             }
-
-            // data.append('email', newEmail);
 
             axios.post('/editMember', data, {
                 headers: {
@@ -306,11 +303,6 @@ export default {
                     }
                 )
         },
-        trackChanges() {
-            this.$emit('changeStep', {
-                step: this.step
-            })
-        },
         validateUpload() {
             if (this.memberToEdit.photo && this.memberToEdit.photo.size > 10485760) {
                 this.fileSize = (this.memberToEdit.photo.size / 1048576).toFixed(2);
@@ -329,10 +321,6 @@ export default {
                 this.message = message;
                 this.confirm = true;
             }
-
-
-            // this.mutableEdit = false;
-            // this.$emit("hideModal", this.mutableEdit);
         },
         trackModal(data) {
             this.confirm = false;
