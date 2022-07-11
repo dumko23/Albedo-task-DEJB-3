@@ -5,10 +5,10 @@
                 <h4>Are you sure you want to {{ message }}?</h4>
                 <div class="d-flex flex-row justify-content-between mt-2">
                     <button class="form-control btn-danger me-2"
-                            @click="cancelModal()">Cancel Changes
+                            @click="cancelModal()">Cancel
                     </button>
                     <button class="form-control btn-success ms-2"
-                            @click="confirmModal()">Submit Changes
+                            @click="confirmModal()">Confirm
                     </button>
                 </div>
             </div>
@@ -25,6 +25,8 @@ export default {
         message: '',
         prop: '',
         exit: '',
+        deletePhoto: '',
+        edit: '',
     },
     data() {
         return {

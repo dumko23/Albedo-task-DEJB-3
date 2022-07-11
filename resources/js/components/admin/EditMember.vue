@@ -1,7 +1,7 @@
 <template>
 
     <div class=" background-modal d-flex justify-content-center"
-         @click="toggleEdit('exit edit', 'exit')">
+         @click="toggleEdit('exit Edit Page', 'exit')">
         <div class="content-modal card w-75 my-4 py-2 " @click.stop>
             <div class="container ">
                 <button class="icon-right"
@@ -16,7 +16,7 @@
                                @confirmModal="trackModal"
                 ></confirm-modal>
 
-                <form v-if="this.$props.member"
+                <form v-if="memberToEdit"
                       class="editForm"
                       name="form"
                       @submit.prevent=""
@@ -38,7 +38,7 @@
                                    pattern="^[.\D]{1,30}$"
                                    maxlength="30" required
                                    @keydown.capture="noDigits($event)"
-                                   v-model="this.$props.member.firstName">
+                                   v-model="memberToEdit.firstName">
                         </div>
                         <div class="form-group w-50 ms-2">
                             <label for="LastName">Last name <span class="minLabel">
@@ -53,7 +53,7 @@
                                    pattern="^[.\D]{1,30}$"
                                    maxlength="30" required
                                    @keydown.capture="noDigits($event)"
-                                   v-model="member.lastName">
+                                   v-model="memberToEdit.lastName">
                         </div>
                     </div>
 
@@ -68,7 +68,7 @@
                                    min="1900-01-01"
                                    max="2005-01-01"
                                    required
-                                   v-model="member.birthDate">
+                                   v-model="memberToEdit.birthDate">
                         </div>
                         <div class="form-group w-50 ms-2">
                             <label for="Country">Country<span class="required">*</span>:</label>
@@ -77,7 +77,7 @@
                                     id="Country"
                                     name="data[country]"
                                     required
-                                    v-model="member.country">
+                                    v-model="memberToEdit.country">
                                 <option selected disabled="disabled" value="null">Choose Country</option>
                                 <option v-for="country in $data.countries" :value="country">{{ country }}</option>
                             </select>
@@ -94,7 +94,7 @@
                                    name="data[email]"
                                    placeholder="your.email@example.com"
                                    required
-                                   v-model="member.email">
+                                   v-model="memberToEdit.email">
                         </div>
                         <div class="form-group w-50 ms-2">
                             <label for="Phone">Phone number
@@ -108,7 +108,7 @@
                                    minlength="17"
                                    placeholder="+1 (555) 555-5555"
                                    required type="tel"
-                                   v-model="member.phone"
+                                   v-model="memberToEdit.phone"
                                    v-mask="'+# (###) ###-####'">
                         </div>
                     </div>
@@ -121,7 +121,7 @@
                                name="data[subject]"
                                placeholder="Repost subject..."
                                required
-                               v-model="member.subject">
+                               v-model="memberToEdit.subject">
                         <span class="error" v-if="errors.subject">
                             {{ errors.subject[0] }}
                         </span>
@@ -135,7 +135,7 @@
                                    name="data[position]"
                                    class="form-control"
                                    placeholder="Position..."
-                                   v-model="member.position">
+                                   v-model="memberToEdit.position">
                         </div>
                         <div class="form-group w-50 ms-2">
                             <label for="Position">Company:</label>
@@ -145,7 +145,7 @@
                                    name="data[company]"
                                    class="form-control"
                                    placeholder="Company..."
-                                   v-model="member.company">
+                                   v-model="memberToEdit.company">
                         </div>
                     </div>
 
@@ -155,27 +155,37 @@
                                   id="About" rows="3"
                                   name="data[about]"
                                   placeholder="About me..."
-                                  v-model="member.about">
+                                  v-model="memberToEdit.about">
                     </textarea>
                     </div>
                     <input type="hidden" name="MAX_FILE_SIZE" value="10485760"/>
                     <div class="form-group">
-                        <label for="imgLoad">New Image (.png, .jpg, .jpeg - up to 10Mb):</label>
-                        <span class="error" v-if="errors.photo">{{ errors.photo[0] }}</span>
+                        <label for="imgLoad">Upload New Image (.png, .jpg, .jpeg - up to 10Mb):</label>
+                        <span v-if="memberToEdit.photo">Extension: {{ extension }}  //  </span>
+                        <span v-if="memberToEdit.photo">Size: {{ fileSize }} Mb</span>
+
                         <input type="file"
                                class="form-control"
                                id="imgLoad"
                                name="photo"
                                accept=".png, .jpg, .jpeg"
                                @change="uploads">
-                        <button class="form-control delete-btn">Delete photo</button>
+                        <span id="fileWarning" class="error" v-if="photo_error">
+                            Max file size is 10 MB. Your is {{ fileSize }} MB</span>
+                        <span class="error" v-if="errors.photo">{{ errors.photo[0] }}</span>
+                        <button class="form-control delete-btn"
+                                @click="toggleEdit(`delete Member's photo`, 'delete')">
+                            Delete member's photo
+                        </button>
                     </div>
 
                     <div class="d-flex flex-row justify-content-between mt-2">
                         <button class="form-control btn-danger me-2"
                                 @click="toggleEdit('exit Edit Page', 'exit')">Cancel Changes
                         </button>
-                        <button class="form-control btn-success ms-2">Submit Changes</button>
+                        <button class="form-control btn-success ms-2" :disabled="btnActive"
+                                @click="toggleEdit(`Edit Member's Data`, 'edit')">Submit Changes
+                        </button>
                     </div>
                 </form>
             </div>
@@ -210,6 +220,9 @@ export default {
             error_exist: false,
             photo_error: false,
             fileSize: 0,
+            memberToEdit: {},
+            photo: '',
+            btnActive: false,
         }
     },
     methods: {
@@ -219,54 +232,63 @@ export default {
             }
         },
         uploads: function (event) {
-            this.member.photo = event.target.files['0'];
+            this.memberToEdit.photo = event.target.files['0'];
             this.getFileInfo();
             this.validateUpload();
+            this.deactivateButton();
         },
         getFileInfo: function () {
             let ext = "Couldn't resolve";
-            const parts = this.member.name.split('.')
+            const parts = this.memberToEdit.photo.name.split('.')
             if (parts.length > 1) {
                 ext = '.' + parts.pop()
             }
             this.extension = ext;
-            this.fileSize = (this.member.photo.size / 1048576).toFixed(2);
+            this.fileSize = (this.memberToEdit.photo.size / 1048576).toFixed(2);
         },
-        // sendData: function () {
-        //     axios.post('/send', {
-        //         firstName: this.form.firstName,
-        //         lastName: this.form.lastName,
-        //         birthDate: this.form.birthDate,
-        //         country: this.form.country,
-        //         subject: this.form.subject,
-        //         phone: this.form.phone,
-        //         email: this.form.email,
-        //     })
-        //         .then(
-        //             response => {
-        //                 console.log(response)
-        //                 this.error_exist = false;
-        //             }
-        //         ).catch(
-        //         error => {
-        //             if (error.response.status === 422) {
-        //                 this.errors = error.response.data.errors || {};
-        //                 this.error_exist = true;
-        //             } else {
-        //                 this.error_exist = false;
-        //                 console.log(error)
-        //             }
-        //
-        //         })
-        //         .then(() => {
-        //             if (this.error_exist) {
-        //                 return false;
-        //             }
-        //             this.persist();
-        //             this.countries = [];
-        //             this.step++;
-        //         })
-        // },
+        sendData: function () {
+            let data = new FormData();
+            let newFileName = this.memberToEdit.email.split('@')[0];
+
+            data.append('newName', newFileName);
+            let array = Object.keys(this.memberToEdit);
+            for (let i = 0; i < array.length; i++) {
+                if (!['memberId', 'created_at', 'updated_at'].includes(array[i]))
+                    console.log(array[i]);
+                data.append(array[i], this.memberToEdit[array[i]]);
+            }
+            console.log(data);
+
+            axios.post('/editMember', data, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+                .then(
+                    response => {
+                        console.log(response)
+                        this.error_exist = false;
+                    }
+                ).catch(
+                error => {
+                    if (error.response.status === 422) {
+                        this.errors = error.response.data.errors || {};
+                        this.error_exist = true;
+                    } else {
+                        this.error_exist = false;
+                        console.log(error)
+                    }
+
+                })
+                .then(() => {
+                    if (this.error_exist) {
+                        return false;
+                    }
+                    this.mutableEdit = false;
+                    this.$emit("hideModal", this.mutableEdit);
+                })
+
+        },
         // updateData: function () {
         //     if (this.photo_error) {
         //         return false;
@@ -280,14 +302,7 @@ export default {
         //         || this.form.about
         //         || this.form.company
         //         || this.form.position) {
-        //         let data = new FormData();
-        //         let newFileName = this.form.email.split('@')[0];
         //
-        //         data.append('newName', newFileName);
-        //         let array = ['photo', 'email', 'position', 'company', 'about']
-        //         for (let i = 0; i < array.length; i++) {
-        //             data.append(array[i], this.form[array[i]]);
-        //         }
         //
         //         axios.post('/update', data, {
         //             headers: {
@@ -312,11 +327,10 @@ export default {
         //             if (this.error_exist) {
         //                 return false;
         //             }
-        //             this.deleteStore();
-        //             this.step++;
+        //
         //         });
         //     }
-        //
+
         // },
         fetchCountries() {
             axios.get('https://restcountries.com/v3.1/all')
@@ -338,19 +352,24 @@ export default {
             })
         },
         validateUpload() {
-            if (this.member.photo && this.member.photo.size > 10485760) {
-                this.fileSize = (this.member.photo.size / 1048576).toFixed(2);
+            if (this.memberToEdit.photo && this.memberToEdit.photo.size > 10485760) {
+                this.fileSize = (this.memberToEdit.photo.size / 1048576).toFixed(2);
                 this.photo_error = true;
+                console.log(1)
                 return false
             } else {
                 this.photo_error = false;
+                console.log(2)
                 return true
             }
         },
         toggleEdit(message, prop) {
-            this.prop = prop;
-            this.message = message;
-            this.confirm = true;
+            if (this.btnActive || prop !== 'confirmEdit') {
+                this.prop = prop;
+                this.message = message;
+                this.confirm = true;
+            }
+
 
             // this.mutableEdit = false;
             // this.$emit("hideModal", this.mutableEdit);
@@ -363,11 +382,20 @@ export default {
             if (this.prop === 'exit' && data === true) {
                 this.mutableEdit = false;
                 this.$emit("hideModal", this.mutableEdit);
+            } else if (this.prop === 'delete' && data === true) {
+                this.photo = 'default-image.png';
+            } else if (this.prop === 'edit' && data === true) {
+                this.sendData();
             }
+        },
+        deactivateButton() {
+            this.btnActive = this.photo_error;
         }
     },
     beforeMount() {
         this.fetchCountries();
+        Object.assign(this.memberToEdit, this.member);
+        console.log(this.memberToEdit);
     },
 }
 </script>
@@ -410,5 +438,18 @@ export default {
     color: grey;
 }
 
+.btn-success:disabled {
+    background-color: lightgreen;
+    border-color: lightgreen;
+}
+
+.error {
+    color: red;
+    margin: 0.5rem;
+}
+
+.required {
+    color: red;
+}
 
 </style>
