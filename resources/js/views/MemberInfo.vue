@@ -14,7 +14,7 @@
 
         <edit-member v-if="edit === true"
                      :edit="this.edit"
-                     :member="this.member[0]"
+                     :member="this.member"
                      @hideModal="toggleEditParent"></edit-member>
 
 
@@ -26,15 +26,15 @@
 
         <div class="memberList">
             <div class="w-75 justify-content-center align-self-center mx-auto mb-5 ">
-                <table v-for="memberInfo in $data.member">
+                <table v-if="member.email">
                     <tr class="img-tr">
                         <td class='descr'>Photo</td>
-                        <td class="img-td"><img class="img-thumbnail img-fluid" :src='"../../"+memberInfo.photo'
+                        <td class="img-td"><img class="img-thumbnail img-fluid" :src='"../../"+member.photo'
                                                 alt='user photo'></td>
                     </tr>
                     <tr v-for="(value, name) in tdNames">
                         <td class='descr'>{{ value }}</td>
-                        <td>{{ memberInfo[name] || 'No data' }}</td>
+                        <td>{{ member[name] || 'No data' }}</td>
                     </tr>
                 </table>
             </div>
@@ -83,17 +83,20 @@ export default {
             this.edit = data
             axios.get(`/getMemberFullData/:${this.$route.params.memberId}`)
                 .then(res => {
-                        this.member = res.data;
-                        this.member[0]['created_at'] = new Date(this.member[0]['created_at']);
-                        this.member[0]['updated_at'] = new Date(this.member[0]['updated_at']);
+                    console.log(res.data[0]);
+                        this.member = res.data[0];
+                        this.member['created_at'] = new Date(this.member['created_at']);
+                        this.member['updated_at'] = new Date(this.member['updated_at']);
                     }
                 );
         },
         deleteMember(data) {
             this.confirm = false;
+            console.log(this.member)
             if (data === true) {
-                axios.post('/deleteMember',
-                    this.member.email)
+                axios.post('/deleteMember',{
+                    email: this.member.email
+                })
                     .then(
                         response => console.log(response)
                     ).catch(
@@ -107,9 +110,9 @@ export default {
     beforeMount() {
         axios.get(`/getMemberFullData/:${this.$route.params.memberId}`)
             .then(res => {
-                    this.member = res.data;
-                    this.member[0]['created_at'] = new Date(this.member[0]['created_at']);
-                    this.member[0]['updated_at'] = new Date(this.member[0]['updated_at']);
+                    this.member = res.data[0];
+                    this.member['created_at'] = new Date(this.member['created_at']);
+                    this.member['updated_at'] = new Date(this.member['updated_at']);
                 }
             );
 

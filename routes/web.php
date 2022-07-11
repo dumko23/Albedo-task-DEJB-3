@@ -38,7 +38,10 @@ Route::get('getMembersInfo', [MembersAdminController::class, 'getMembersInfo'])
 Route::get('getMemberFullData/:{memberId}', [MembersAdminController::class, 'getMemberFullData'])
     ->middleware('auth');
 
-Route::post('/editMember', [MembersAdminController::class, 'editMember'])->middleware('auth');
+Route::post('/editMember', [MembersAdminController::class, 'editMember'])
+    ->middleware('auth');
+Route::post('/deleteMember', [MembersAdminController::class, 'deleteMember'])
+    ->middleware('auth');
 
 /*
  * Public Routes

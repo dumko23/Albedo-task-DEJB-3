@@ -9,9 +9,9 @@ use Illuminate\Http\Request;
 
 class MembersAdminController extends Controller
 {
-    public function getMemberFullData($memberId): Collection
+    public function getMemberFullData($memberId): \Illuminate\Support\Collection
     {
-        return Member::all()->where('memberId', '=', $memberId);
+        return MembersAdmin::getFullInfo($memberId);
 
     }
 
@@ -103,8 +103,11 @@ class MembersAdminController extends Controller
         }
 
         MembersAdmin::editMember($data);
+    }
 
-        return $data;
-
+    public function deleteMember(Request $request)
+    {
+//        return $request->get('email');
+        MembersAdmin::deleteMember($request->all());
     }
 }
