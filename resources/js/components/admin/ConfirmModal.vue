@@ -1,7 +1,7 @@
 <template>
     <div class=" background-modal d-flex justify-content-center">
-        <div class="content-modal card w-75 my-4 py-2 " @click.stop>
-            <div class="container ">
+        <div class="content-modal card w-50 h-25 my-4 py-2 " @click.stop>
+            <div class="container my-auto">
                 <h4>Are you sure you want to {{ message }}?</h4>
                 <div class="d-flex flex-row justify-content-between mt-2">
                     <button class="form-control btn-danger me-2"
