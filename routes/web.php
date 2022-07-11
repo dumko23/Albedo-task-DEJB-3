@@ -17,14 +17,13 @@ use App\Http\Controllers\Auth\LoginController;
 |
 */
 
-//Route::get('/', function () {
-//    return view('index');
-//});
 Auth::routes();
 
+/*
+ * Admin Routes
+ */
 
-
-Route::get('/admin', function (){
+Route::get('/admin', function () {
     return view('home');
 });
 Route::get('/admin/dashboard', function () {
@@ -33,24 +32,27 @@ Route::get('/admin/dashboard', function () {
 Route::get('/admin/member-info/{memberId}', function () {
     return view('admin-dashboard', ['title' => 'Admin / Member Info']);
 })->middleware('auth')->name('Member Info');
+
 Route::get('getMembersInfo', [MembersAdminController::class, 'getMembersInfo'])
     ->middleware('auth');
 Route::get('getMemberFullData/:{memberId}', [MembersAdminController::class, 'getMemberFullData'])
     ->middleware('auth');
 
+Route::post('/editMember', [MembersAdminController::class, 'editMember'])->middleware('auth');
 
+/*
+ * Public Routes
+ */
 
-
-Route::get('/',function (){
+Route::get('/', function () {
     return view('index', ['title' => 'Registration Page']);
 });
-Route::get('/members',function (){
+Route::get('/members', function () {
     return view('index', ['title' => 'Member List']);
 });
-
-
 
 Route::post('send', [MemberController::class, 'send']);
 Route::post('update', [MemberController::class, 'update']);
 Route::post('uploadFile', [MemberController::class, 'uploadFile']);
+
 

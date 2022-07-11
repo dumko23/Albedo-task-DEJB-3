@@ -246,18 +246,21 @@ export default {
             this.extension = ext;
             this.fileSize = (this.memberToEdit.photo.size / 1048576).toFixed(2);
         },
+
         sendData: function () {
             let data = new FormData();
             let newFileName = this.memberToEdit.email.split('@')[0];
 
             data.append('newName', newFileName);
+            data.append('oldEmail', this.member.email);
+
             let array = Object.keys(this.memberToEdit);
             for (let i = 0; i < array.length; i++) {
                 if (!['memberId', 'created_at', 'updated_at'].includes(array[i]))
-                    console.log(array[i]);
                 data.append(array[i], this.memberToEdit[array[i]]);
             }
-            console.log(data);
+
+            // data.append('email', newEmail);
 
             axios.post('/editMember', data, {
                 headers: {
@@ -289,49 +292,6 @@ export default {
                 })
 
         },
-        // updateData: function () {
-        //     if (this.photo_error) {
-        //         return false;
-        //     } else if (!this.dataExists()) {
-        //         this.deleteStore();
-        //         this.step++;
-        //         return true;
-        //     }
-        //
-        //     if (this.form.photo
-        //         || this.form.about
-        //         || this.form.company
-        //         || this.form.position) {
-        //
-        //
-        //         axios.post('/update', data, {
-        //             headers: {
-        //                 'Content-Type': 'multipart/form-data'
-        //             }
-        //         }).then(
-        //             response => {
-        //                 console.log(response.data);
-        //                 this.error_exist = false;
-        //             }
-        //         ).catch(
-        //             error => {
-        //                 if (error.response.status === 422) {
-        //                     this.errors = error.response.data.errors || {};
-        //                     this.error_exist = true;
-        //                 } else {
-        //                     this.error_exist = false;
-        //                     console.log(error)
-        //                 }
-        //             }
-        //         ).then(() => {
-        //             if (this.error_exist) {
-        //                 return false;
-        //             }
-        //
-        //         });
-        //     }
-
-        // },
         fetchCountries() {
             axios.get('https://restcountries.com/v3.1/all')
                 .then(res => {
@@ -383,7 +343,7 @@ export default {
                 this.mutableEdit = false;
                 this.$emit("hideModal", this.mutableEdit);
             } else if (this.prop === 'delete' && data === true) {
-                this.photo = 'default-image.png';
+                this.memberToEdit.photo = 'default-image.png';
             } else if (this.prop === 'edit' && data === true) {
                 this.sendData();
             }
@@ -395,7 +355,6 @@ export default {
     beforeMount() {
         this.fetchCountries();
         Object.assign(this.memberToEdit, this.member);
-        console.log(this.memberToEdit);
     },
 }
 </script>
