@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Member;
+use App\Models\MembersAdmin;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
@@ -101,8 +102,7 @@ class MembersAdminController extends Controller
                 $data[$key] = $value;
         }
 
-
-//        $data['email'] = $request->get('oldEmail');
+        MembersAdmin::editMember($data);
 
         return $data;
 
