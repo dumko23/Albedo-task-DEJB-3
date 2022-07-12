@@ -24,6 +24,9 @@ ADMIN_NAME="Test User"
 ```
 
 
+To start interacting with Admin Page - go to the ```/admin``` in your app url (it's an entrypoint. Any other admin-side url will redirect to ```/login``` page)
+
+
 Adjust ```database/seeders```, run ```php artisan migrate``` and ```php artisan db:seed``` to initiate database table, seed your admin record and some dummy member data.
 
 
