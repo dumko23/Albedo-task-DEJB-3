@@ -17,7 +17,7 @@ class MemberController extends Controller
 
     public function getMembers(): Collection
     {
-        return Member::all(['firstName', 'lastName', 'subject', 'photo', 'email']);
+        return Member::all(['firstName', 'lastName', 'subject', 'photo', 'email'])->where('visibility', '=', true);
 
     }
 

@@ -42,6 +42,8 @@ Route::post('/editMember', [MembersAdminController::class, 'editMember'])
     ->middleware('auth');
 Route::post('/deleteMember', [MembersAdminController::class, 'deleteMember'])
     ->middleware('auth');
+Route::post('/toggleVisibility', [MembersAdminController::class, 'toggleVisibility'])
+    ->middleware('auth');
 
 /*
  * Public Routes

@@ -15,7 +15,8 @@ class MembersAdmin extends Model
     {
         DB::table('members')
             ->where('email', $data['oldEmail'])
-            ->update([
+            ->update(
+                [
                     'about' => $data['about'],
                     'position' => $data['position'],
                     'company' => $data['company'],
@@ -44,5 +45,16 @@ class MembersAdmin extends Model
         return DB::table('members')
             ->where('memberId', $data)
             ->get();
+    }
+
+    public static function toggleVisibility(array $data)
+    {
+        DB::table('members')
+            ->where('email', $data['email'])
+            ->update(
+                [
+                    'visibility' => $data['show']
+                ]
+            );
     }
 }

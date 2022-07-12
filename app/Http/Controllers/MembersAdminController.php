@@ -82,4 +82,8 @@ class MembersAdminController extends Controller
     {
         MembersAdmin::deleteMember($request->all());
     }
+
+    public function toggleVisibility(Request $request){
+        MembersAdmin::toggleVisibility($request->all());
+    }
 }

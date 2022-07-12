@@ -78,12 +78,24 @@ export default {
     methods: {
         toggleShow() {
             this.memberShow = this.memberShow !== true;
+            axios.post('/toggleVisibility', {
+                show: this.memberShow,
+                email: this.member.email
+            })
+                .then(res => {
+                        console.log(res);
+                    }
+                )
+                .catch(
+                    error => {
+                            this.error_exist = false;
+                            console.log(error)
+                    });
         },
         toggleEditParent(data) {
             this.edit = data
             axios.get(`/getMemberFullData/:${this.$route.params.memberId}`)
                 .then(res => {
-                    console.log(res.data[0]);
                         this.member = res.data[0];
                         this.member['created_at'] = new Date(this.member['created_at']);
                         this.member['updated_at'] = new Date(this.member['updated_at']);
@@ -92,9 +104,8 @@ export default {
         },
         deleteMember(data) {
             this.confirm = false;
-            console.log(this.member)
             if (data === true) {
-                axios.post('/deleteMember',{
+                axios.post('/deleteMember', {
                     email: this.member.email
                 })
                     .then(
