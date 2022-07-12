@@ -63,8 +63,8 @@ class MemberController extends Controller
                     'max' => 'This filed should be less than :max symbols!',
                     'photo.max' => 'File size is greater than :max bytes!'
                 ]);
-            $newImageName = 'images/' . time() . '-' . $request->get('newName') . '.' . $request->file('photo')->extension();
-            $request->file('photo')->move(public_path('images'), $newImageName);
+            $newImageName = 'public/images/' . time() . '-' . $request->get('newName') . '.' . $request->file('photo')->extension();
+            $request->file('photo')->move(public_path('/public/images'), $newImageName);
 
         } else {
             $request->validate(

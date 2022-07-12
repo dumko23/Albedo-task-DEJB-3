@@ -15,4 +15,4 @@ mix.js('resources/js/app.js', 'public/js')
     .vue()
     .sass('resources/sass/app.scss', 'public/css')
     .css('resources/css/members.css', 'public/css')
-    .copyDirectory('storage/app/images', 'public');
+    .copyDirectory('storage/app/public/images', 'public');
