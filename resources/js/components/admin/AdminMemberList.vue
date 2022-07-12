@@ -27,6 +27,10 @@
                                 member.email
                             }}</a></td>
                     </tr>
+                    <tr>
+                        <td class='descr'>Visibility</td>
+                        <td class="td-content">{{ member.visibility? 'visible' : 'hidden' }}</td>
+                    </tr>
                 </table>
                 <a class="w-100 dropdown-item data-link" :href="'/admin/member-info/'+member.memberId">Show full data</a>
             </div>
