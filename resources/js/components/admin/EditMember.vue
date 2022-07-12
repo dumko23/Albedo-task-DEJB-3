@@ -1,8 +1,7 @@
 <template>
 
-    <div class=" background-modal d-flex justify-content-center"
-         @click="toggleEdit('exit Edit Page', 'exit')">
-        <div class="content-modal card w-75 my-4 py-2 " @click.stop>
+    <div class=" background-modal d-flex justify-content-center">
+        <div class="content-modal card w-75 my-4 py-2 ">
             <div class="container ">
                 <button class="icon-right"
                         @click="toggleEdit('exit Edit Page', 'exit')">
@@ -29,7 +28,6 @@
                             <label for="FirstName">First name <span
                                 class="minLabel">(Only letters and '`- symbols allowed)</span><span
                                 class="required">*</span>:</label>
-                            <span class="error" v-if="errors.firstName">{{ errors.firstName[0] }}</span>
                             <input type="text"
                                    class="form-control"
                                    id="FirstName"
@@ -39,12 +37,12 @@
                                    maxlength="30" required
                                    @keydown.capture="noDigits($event)"
                                    v-model="memberToEdit.firstName">
+                            <span class="error" v-if="errors.firstName">{{ errors.firstName[0] }}</span>
                         </div>
                         <div class="form-group w-50 ms-2">
                             <label for="LastName">Last name <span class="minLabel">
                         (Only letters and '`- symbols allowed)</span><span class="required">*</span>:
                             </label>
-                            <span class="error" v-if="errors.lastName">{{ errors.lastName[0] }}</span>
                             <input type="text"
                                    class="form-control"
                                    id="LastName"
@@ -54,13 +52,13 @@
                                    maxlength="30" required
                                    @keydown.capture="noDigits($event)"
                                    v-model="memberToEdit.lastName">
+                            <span class="error" v-if="errors.lastName">{{ errors.lastName[0] }}</span>
                         </div>
                     </div>
 
                     <div class="d-flex flex-row justify-content-between">
                         <div class="form-group w-50 me-2">
                             <label for="BirthDate">Birth Date<span class="required">*</span>:</label>
-                            <span class="error" v-if="errors.birthDate">{{ errors.birthDate[0] }}</span>
                             <input type="date"
                                    class="form-control"
                                    id="BirthDate"
@@ -69,10 +67,10 @@
                                    max="2005-01-01"
                                    required
                                    v-model="memberToEdit.birthDate">
+                            <span class="error" v-if="errors.birthDate">{{ errors.birthDate[0] }}</span>
                         </div>
                         <div class="form-group w-50 ms-2">
                             <label for="Country">Country<span class="required">*</span>:</label>
-                            <span class="error" v-if="errors.country">{{ errors.country[0] }}</span>
                             <select class="form-control"
                                     id="Country"
                                     name="data[country]"
@@ -81,13 +79,13 @@
                                 <option selected disabled="disabled" value="null">Choose Country</option>
                                 <option v-for="country in $data.countries" :value="country">{{ country }}</option>
                             </select>
+                            <span class="error" v-if="errors.country">{{ errors.country[0] }}</span>
                         </div>
                     </div>
 
-                    <div class="d-flex flex-row justify-content-between">
+                    <div class="d-flex flex-row justify-content-between align-content-center">
                         <div class="form-group w-50 me-2">
                             <label for="Email">Email<span class="required">*</span>:</label>
-                            <span class="error" v-if="errors.email">{{ errors.email[0] }}</span>
                             <input type="email"
                                    class="form-control"
                                    id="Email"
@@ -95,21 +93,24 @@
                                    placeholder="your.email@example.com"
                                    required
                                    v-model="memberToEdit.email">
+                            <span class="error" v-if="errors.email">{{ errors.email[0] }}</span>
                         </div>
                         <div class="form-group w-50 ms-2">
                             <label for="Phone">Phone number
                                 <span class="minLabel">(in the following format: "+1 (555) 555-5555")</span>
                                 <span class="required">*</span>:
                             </label>
-                            <span class="error" v-if="errors.phone">{{ errors.phone[0] }}</span>
                             <input class="form-control"
                                    id="Phone"
                                    name="data[phone]"
                                    minlength="17"
                                    placeholder="+1 (555) 555-5555"
-                                   required type="tel"
-                                   v-model="memberToEdit.phone"
-                                   v-mask="'+# (###) ###-####'">
+                                   required
+                                   type="tel"
+                                   v-mask="'+# (###) ###-####'"
+                                   v-model="memberToEdit.phone">
+                            <span class="minLabel">Old Number: {{ oldPhone }}</span>
+                            <span class="error" v-if="errors.phone">{{ errors.phone[0] }}</span>
                         </div>
                     </div>
 
@@ -161,8 +162,7 @@
                     <input type="hidden" name="MAX_FILE_SIZE" value="10485760"/>
                     <div class="form-group">
                         <label for="imgLoad">Upload New Image (.png, .jpg, .jpeg - up to 10Mb):</label>
-                        <span v-if="memberToEdit.photo">Extension: {{ extension }}  //  </span>
-                        <span v-if="memberToEdit.photo">Size: {{ fileSize }} Mb</span>
+
 
                         <input type="file"
                                class="form-control"
@@ -170,6 +170,10 @@
                                name="photo"
                                accept=".png, .jpg, .jpeg"
                                @change="uploads">
+                        <div class="flex flex-row justify-content-around">
+                            <span class="d-inline-block w-25" v-if="memberToEdit.photo">Extension: {{ extension }}</span>
+                            <span class="d-inline-block w-25" v-if="memberToEdit.photo">Size: {{ fileSize }} Mb</span>
+                        </div>
                         <span id="fileWarning" class="error" v-if="photo_error">
                             Max file size is 10 MB. Your is {{ fileSize }} MB</span>
                         <span class="error" v-if="errors.photo">{{ errors.photo[0] }}</span>
@@ -222,6 +226,7 @@ export default {
             fileSize: 0,
             memberToEdit: {},
             btnActive: false,
+            oldPhone: ''
         }
     },
     methods: {
@@ -256,7 +261,7 @@ export default {
             let array = Object.keys(this.memberToEdit);
             for (let i = 0; i < array.length; i++) {
                 if (!['memberId', 'created_at', 'updated_at'].includes(array[i]))
-                data.append(array[i], this.memberToEdit[array[i]]);
+                    data.append(array[i], this.memberToEdit[array[i]]);
             }
 
             axios.post('/editMember', data, {
@@ -316,11 +321,18 @@ export default {
             }
         },
         toggleEdit(message, prop) {
-            if (this.btnActive || prop !== 'confirmEdit') {
-                this.prop = prop;
-                this.message = message;
-                this.confirm = true;
+
+
+            if (this.btnActive && prop === 'edit') {
+                return false;
+            } else if (prop === 'edit') {
+                if (!this.validateInputFields()) {
+                    return false;
+                }
             }
+            this.prop = prop;
+            this.message = message;
+            this.confirm = true;
         },
         trackModal(data) {
             this.confirm = false;
@@ -338,12 +350,23 @@ export default {
         },
         deactivateButton() {
             this.btnActive = this.photo_error;
-        }
+        },
+        validateInputFields() {
+            return !(!this.memberToEdit.firstName ||
+                !this.memberToEdit.lastName ||
+                !this.memberToEdit.country ||
+                !this.memberToEdit.subject ||
+                !this.memberToEdit.birthDate ||
+                !this.memberToEdit.phone ||
+                !this.memberToEdit.email);
+        },
     },
     beforeMount() {
         this.fetchCountries();
         Object.assign(this.memberToEdit, this.member);
-    },
+        this.oldPhone = this.memberToEdit.phone;
+        delete this.memberToEdit.phone;
+    }
 }
 </script>
 
@@ -391,6 +414,7 @@ export default {
 }
 
 .error {
+    display: inline-block;
     color: red;
     margin: 0.5rem;
 }
