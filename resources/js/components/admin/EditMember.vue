@@ -153,7 +153,7 @@
                     <div class="form-group">
                         <label for="About">About:</label>
                         <textarea class="form-control"
-                                  id="About" rows="3"
+                                  id="About" rows="1"
                                   name="data[about]"
                                   placeholder="About me..."
                                   v-model="memberToEdit.about">
@@ -162,25 +162,34 @@
                     <input type="hidden" name="MAX_FILE_SIZE" value="10485760"/>
                     <div class="form-group">
                         <label for="imgLoad">Upload New Image (.png, .jpg, .jpeg - up to 10Mb):</label>
-
-
                         <input type="file"
                                class="form-control"
                                id="imgLoad"
                                name="photo"
                                accept=".png, .jpg, .jpeg"
-                               @change="uploads">
+                               ref="inputFile"
+                               @change="uploads"
+                               :key="fileInputKey">
                         <div class="flex flex-row justify-content-around">
-                            <span class="d-inline-block w-25" v-if="memberToEdit.photo">Extension: {{ extension }}</span>
+                            <span class="d-inline-block w-25" v-if="memberToEdit.photo">Extension: {{
+                                    extension
+                                }}</span>
                             <span class="d-inline-block w-25" v-if="memberToEdit.photo">Size: {{ fileSize }} Mb</span>
                         </div>
                         <span id="fileWarning" class="error" v-if="photo_error">
                             Max file size is 10 MB. Your is {{ fileSize }} MB</span>
                         <span class="error" v-if="errors.photo">{{ errors.photo[0] }}</span>
-                        <button class="form-control delete-btn"
-                                @click="toggleEdit(`delete Member's photo`, 'delete')">
-                            Delete member's photo
-                        </button>
+                        <div class="d-flex flex-row justify-content-between mt-2">
+                            <button class="form-control delete-btn me-2"
+                                    @click="toggleEdit(`delete Member's photo (you can undo this until
+                                    you submit edited data or just by quiting edit window)`, 'delete')">
+                                Delete member's photo
+                            </button>
+                            <button class="form-control delete-btn ms-2"
+                                    @click="toggleEdit(`Retrieve Member's photo`, 'retrieve')">
+                                Retrieve member's photo
+                            </button>
+                        </div>
                     </div>
 
                     <div class="d-flex flex-row justify-content-between mt-2">
@@ -226,7 +235,9 @@ export default {
             fileSize: 0,
             memberToEdit: {},
             btnActive: false,
-            oldPhone: ''
+            oldPhoto: '',
+            oldPhone: '',
+            fileInputKey: 0
         }
     },
     methods: {
@@ -344,6 +355,8 @@ export default {
                 this.memberToEdit.photo = 'default-image.png';
             } else if (this.prop === 'edit' && data === true) {
                 this.sendData();
+            } else if (this.prop === 'retrieve' && data === true) {
+                this.retrieve();
             }
         },
         deactivateButton() {
@@ -358,11 +371,20 @@ export default {
                 !this.memberToEdit.phone ||
                 !this.memberToEdit.email);
         },
+        retrieve() {
+            this.$refs.inputFile.value = null;
+            this.memberToEdit.photo = this.oldPhoto;
+            this.photo_error = false;
+            this.fileInputKey++;
+            this.deactivateButton();
+            return true;
+        }
     },
     beforeMount() {
         this.fetchCountries();
         Object.assign(this.memberToEdit, this.member);
         this.oldPhone = this.memberToEdit.phone;
+        this.oldPhoto = this.memberToEdit.photo;
         delete this.memberToEdit.phone;
     }
 }
