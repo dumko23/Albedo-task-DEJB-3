@@ -15,10 +15,9 @@ class MemberController extends Controller
         return count(Member::all(['email']));
     }
 
-    public function getMembers(): Collection
+    public function getMembers(): \Illuminate\Support\Collection
     {
-        return Member::all(['firstName', 'lastName', 'subject', 'photo', 'email'])->where('visibility', '=', true);
-
+        return Member::getMembers();
     }
 
     public function send(Request $request)
