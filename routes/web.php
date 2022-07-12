@@ -24,7 +24,7 @@ Auth::routes();
  */
 
 Route::get('/admin', function () {
-    return view('home');
+    return view('home-admin');
 });
 Route::get('/admin/dashboard', function () {
     return view('admin-dashboard', ['title' => 'Admin Page']);

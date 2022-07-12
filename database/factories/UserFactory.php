@@ -19,9 +19,9 @@ class UserFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'email' => fake()->safeEmail(),
+            'email' => $_ENV['ADMIN_EMAIL'],
             'email_verified_at' => now(),
-            'password' => '$2y$10$ACchkKril6Kr6dRm/1eVZOB0BU5H7W1jFrnI4DNUElYOw.1iQkv26', // xm46c8XdzDaXH_7
+            'password' => password_hash($_ENV['ADMIN_PASSWORD'], PASSWORD_DEFAULT),
             'remember_token' => Str::random(10),
         ];
     }
