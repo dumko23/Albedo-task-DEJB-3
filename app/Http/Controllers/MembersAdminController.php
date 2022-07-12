@@ -65,7 +65,7 @@ class MembersAdminController extends Controller
                     ->extension();
             $request->file('photo')->move(public_path('images'), $newImageName);
             $data['photo'] = $newImageName;
-        } else if ($request->get('photo') === 'default-image.png') {
+        } else  {
             $data['photo'] = $request->get('photo');
         }
 

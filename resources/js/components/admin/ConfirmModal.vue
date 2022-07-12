@@ -37,19 +37,16 @@ export default {
 
     methods: {
         confirmModal() {
-            console.log(this.exitModal);
             this.exitModal = true;
             this.$emit("confirmModal", this.exitModal);
         },
         cancelModal() {
-            console.log(this.exitModal);
             this.exitModal = false;
             this.$emit("cancelModal", this.exitModal);
         }
     },
     beforeMount() {
         this.exitModal = this.exit;
-        console.log(this.prop);
     }
 }
 </script>

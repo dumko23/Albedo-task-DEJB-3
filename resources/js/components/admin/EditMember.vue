@@ -312,11 +312,9 @@ export default {
             if (this.memberToEdit.photo && this.memberToEdit.photo.size > 10485760) {
                 this.fileSize = (this.memberToEdit.photo.size / 1048576).toFixed(2);
                 this.photo_error = true;
-                console.log(1)
                 return false
             } else {
                 this.photo_error = false;
-                console.log(2)
                 return true
             }
         },
