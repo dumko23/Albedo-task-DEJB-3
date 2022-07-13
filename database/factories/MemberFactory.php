@@ -22,8 +22,8 @@ class MemberFactory extends Factory
             'subject' => $this->faker->sentence,
             'country' => $this->faker->country,
             'email' => $this->faker->email,
-            'birthDate' => $this->faker->date,
-            'phone' => $this->faker->phoneNumber
+            'birthDate' => $this->faker->dateTimeBetween('-60 years', '-18 years'),
+            'phone' => $this->faker->numerify('+# (###) ###-####')
         ];
     }
 }
