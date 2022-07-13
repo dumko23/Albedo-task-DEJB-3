@@ -7,8 +7,8 @@
             </div>
             <button class="edit-btn" @click="confirm = true">Delete</button>
             <button class="edit-btn" @click="edit = true">Edit</button>
-            <button v-if="$data.memberShow === true" class="edit-btn" @click=" this.toggleShow">Hide Member</button>
-            <button v-if="$data.memberShow === false" class="edit-btn" @click="this.toggleShow">Show Member</button>
+            <button v-if="$data.memberVisibility === true" class="edit-btn" @click=" this.toggleShow">Hide Member</button>
+            <button v-if="$data.memberVisibility === false" class="edit-btn" @click="this.toggleShow">Show Member</button>
         </div>
 
 
@@ -36,6 +36,10 @@
                         <td class='descr'>{{ value }}</td>
                         <td>{{ member[name] || 'No data' }}</td>
                     </tr>
+                    <tr>
+                        <td class="descr">Visibility</td>
+                        <td :key="memberVisibility">{{ !!memberVisibility }}</td>
+                    </tr>
                 </table>
             </div>
         </div>
@@ -54,7 +58,7 @@ export default {
 
     data() {
         return {
-            memberShow: true,
+            memberVisibility: true,
             member: {},
             confirm: false,
             edit: false,
@@ -77,9 +81,9 @@ export default {
     },
     methods: {
         toggleShow() {
-            this.memberShow = this.memberShow !== true;
+            this.memberVisibility = !this.memberVisibility;
             axios.post('/toggleVisibility', {
-                show: this.memberShow,
+                show: this.memberVisibility,
                 email: this.member.email
             })
                 .then(res => {
@@ -124,6 +128,7 @@ export default {
                     this.member = res.data[0];
                     this.member['created_at'] = new Date(this.member['created_at']);
                     this.member['updated_at'] = new Date(this.member['updated_at']);
+                    this.memberVisibility = !!this.member['visibility'];
                 }
             );
 
