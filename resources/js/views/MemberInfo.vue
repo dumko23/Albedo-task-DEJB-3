@@ -3,12 +3,12 @@
 
         <div class="border-bottom pb-3">
             <div class="mt-3 d-inline-block">
-                <a class="navbar-brand text-dark back-link" @click="$router.go(-1)">Back</a>
+                <a class="navbar-brand text-dark back-link" href="/admin/dashboard">Back</a>
             </div>
             <button class="edit-btn" @click="confirm = true">Delete</button>
             <button class="edit-btn" @click="edit = true">Edit</button>
-            <button v-if="$data.memberVisibility === true" class="edit-btn" @click=" this.toggleShow">Hide Member</button>
-            <button v-if="$data.memberVisibility === false" class="edit-btn" @click="this.toggleShow">Show Member</button>
+            <button v-if="$data.memberVisibility === true" class="edit-btn" @click="toggleShow">Hide Member</button>
+            <button v-if="$data.memberVisibility === false" class="edit-btn" @click="toggleShow">Show Member</button>
         </div>
 
 

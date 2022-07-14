@@ -17,7 +17,7 @@ class MembersAdminController extends Controller
 
     public function getMembersInfo(): Collection
     {
-        return Member::all(['firstName', 'lastName', 'country', 'photo', 'email', 'memberId', 'visibility']);
+        return Member::all(['firstName', 'lastName', 'subject', 'photo', 'email', 'memberId', 'visibility']);
 
     }
 
