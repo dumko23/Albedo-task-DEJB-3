@@ -112,7 +112,8 @@
                                    v-model="memberToEdit.phone"
                                    :key="phoneInputKey"
                                    @keydown.capture="noLetters"
-                                   @change="phoneUpdate">
+                                   @change="phoneInputKey++"
+                                   ref="phone">
                             <span class="minLabel">Old Number: {{ oldPhone }}</span>
                             <span class="error" v-if="errors.phone">{{ errors.phone[0] }}</span>
                         </div>
@@ -164,38 +165,49 @@
                     </textarea>
                     </div>
                     <input type="hidden" name="MAX_FILE_SIZE" value="10485760"/>
-                    <div class="form-group">
-                        <label for="imgLoad">Upload New Image (.png, .jpg, .jpeg - up to 10Mb):</label>
-                        <input type="file"
-                               class="form-control"
-                               id="imgLoad"
-                               name="photo"
-                               accept=".png, .jpg, .jpeg"
-                               ref="inputFile"
-                               @change="uploads"
-                               :key="fileInputKey">
-                        <div class="flex flex-row justify-content-around">
-                            <span class="d-inline-block w-25" v-if="memberToEdit.photo">Extension: {{
-                                    extension
-                                }}</span>
-                            <span class="d-inline-block w-25" v-if="memberToEdit.photo">Size: {{ fileSize }} Mb</span>
+                    <div class="d-flex flex-row justify-content-between mt-2">
+                        <div class="form-group w-50 me-2">
+                            <span>Current photo: {{ memberToEdit.photo.name || memberToEdit.photo }}</span>
                         </div>
-                        <span id="fileWarning" class="error" v-if="photo_error">
+                        <div class="form-group w-50 ms-2">
+                            <label for="imgLoad">Upload New Image (.png, .jpg, .jpeg - up to 10Mb):</label>
+                            <input type="file"
+                                   class="form-control"
+                                   id="imgLoad"
+                                   name="photo"
+                                   accept=".png, .jpg, .jpeg"
+                                   ref="inputFile"
+                                   @change="uploads"
+                                   :key="fileInputKey">
+                            <div class="flex flex-row justify-content-around">
+                                <div class=" w-50" v-if="memberToEdit.photo">
+                                    <span>Extension: {{
+                                            extension
+                                        }}</span>
+                                </div>
+                                <div class=" w-50" v-if="memberToEdit.photo">
+                                <span>Size: {{
+                                        fileSize
+                                    }} Mb</span>
+                                </div>
+                            </div>
+
+                            <span id="fileWarning" class="error" v-if="photo_error">
                             Max file size is 10 MB. Your is {{ fileSize }} MB</span>
-                        <span class="error" v-if="errors.photo">{{ errors.photo[0] }}</span>
-                        <div class="d-flex flex-row justify-content-between mt-2">
-                            <button class="form-control delete-btn me-2"
-                                    @click="toggleEdit(`delete Member's photo (you can undo this until
-                                    you submit edited data or just by quiting edit window)`, 'delete')">
-                                Delete member's photo
-                            </button>
-                            <button class="form-control delete-btn ms-2"
-                                    @click="toggleEdit(`Retrieve Member's photo`, 'retrieve')">
-                                Retrieve member's photo
-                            </button>
+                            <span class="error" v-if="errors.photo">{{ errors.photo[0] }}</span>
                         </div>
                     </div>
-
+                    <div class="d-flex flex-row justify-content-between mt-2">
+                        <button class="form-control delete-btn me-2" :disabled="defaultBtnActive"
+                                @click="toggleEdit(`Set default photo (you can undo this until
+                                    you submit edited data or just by quiting edit window)`, 'delete')">
+                            Set default photo
+                        </button>
+                        <button class="form-control delete-btn ms-2" :disabled="retrieveBtnActive"
+                                @click="toggleEdit(`Set old member's photo`, 'retrieve')">
+                            Set old member's photo
+                        </button>
+                    </div>
                     <div class="d-flex flex-row justify-content-between mt-2">
                         <button class="form-control btn-danger me-2"
                                 @click="toggleEdit('exit Edit Page', 'exit')">Cancel Changes
@@ -239,11 +251,12 @@ export default {
             fileSize: 0,
             memberToEdit: {},
             btnActive: false,
+            defaultBtnActive: false,
+            retrieveBtnActive: false,
             oldPhoto: '',
             oldPhone: '',
             fileInputKey: 0,
             phoneInputKey: 0,
-            phoneNumberMask: ''
         }
     },
     methods: {
@@ -259,12 +272,17 @@ export default {
                 console.log(event.key)
                 event.preventDefault()
             }
+            this.phoneUpdate();
         },
         uploads: function (event) {
             this.memberToEdit.photo = event.target.files['0'];
             this.getFileInfo();
             this.validateUpload();
-            this.deactivateButton();
+            this.deactivateConfirmButton();
+            if( this.defaultBtnActive === true){
+                this.deactivateDefaultButton();
+            }
+            this.retrieveBtnActive = false;
         },
         getFileInfo: function () {
             let ext = "Couldn't resolve";
@@ -367,13 +385,24 @@ export default {
                 this.$emit("hideModal", this.mutableEdit);
             } else if (this.prop === 'delete' && data === true) {
                 this.memberToEdit.photo = 'default-image.png';
+                this.$refs.inputFile.files = null;
+                this.fileInputKey++;
+                this.fileSize = null;
+                this.extension = null;
+                this.deactivateDefaultButton();
+                this.photo_error = false;
+                this.deactivateConfirmButton();
             } else if (this.prop === 'edit' && data === true) {
                 this.sendData();
             } else if (this.prop === 'retrieve' && data === true) {
                 this.retrieve();
+                this.fileSize = null;
+                this.extension = null;
+                this.photo_error = false;
+                this.deactivateConfirmButton();
             }
         },
-        deactivateButton() {
+        deactivateConfirmButton() {
             this.btnActive = this.photo_error;
         },
         validateInputFields() {
@@ -390,13 +419,23 @@ export default {
             this.memberToEdit.photo = this.oldPhoto;
             this.photo_error = false;
             this.fileInputKey++;
-            this.deactivateButton();
+            this.deactivateConfirmButton();
             return true;
         },
         phoneUpdate() {
             setTimeout(() => {
                 this.phoneInputKey++;
+                this.$nextTick(() => this.$refs.phone.focus());
             }, 0)
+        },
+        deactivateDefaultButton(){
+            if(this.defaultBtnActive === false && this.memberToEdit.photo === 'default-image.png'){
+                this.defaultBtnActive = !this.defaultBtnActive;
+            } else if(this.defaultBtnActive !== false && this.memberToEdit.photo !== 'default-image.png'){
+                this.defaultBtnActive = !this.defaultBtnActive;
+            } else {
+                return false;
+            }
         }
     },
     beforeMount() {
@@ -406,7 +445,16 @@ export default {
         this.oldPhone = this.memberToEdit.phone;
         delete this.memberToEdit.phone;
         this.memberToEdit.phone = this.oldPhone;
+        if (this.memberToEdit.photo === 'default-image.png'){
+            this.deactivateDefaultButton();
+        }
     },
+    updated() {
+        if (this.memberToEdit.photo === 'default-image.png'){
+            this.deactivateDefaultButton();
+        }
+        this.retrieveBtnActive = this.memberToEdit.photo === this.oldPhoto;
+    }
 }
 </script>
 
