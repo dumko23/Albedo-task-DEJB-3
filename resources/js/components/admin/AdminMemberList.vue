@@ -5,6 +5,7 @@
                 class="mb-5"
                 style="text-align: center; margin-top: 3rem;">There's no registered
                 members yet!</h1>
+            <h3 v-if="$data.members.length > 0">Total Members: {{ $data.members.length }}</h3>
 
             <confirm-modal v-if="confirmDelete === true"
                            :message="'Delete this Member'"
