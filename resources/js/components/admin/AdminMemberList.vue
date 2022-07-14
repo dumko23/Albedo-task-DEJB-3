@@ -40,7 +40,10 @@
                         <td>
                             <a class="navbar-brand text-dark email-link"
                                :href="`mailto:${member.email}`">{{ member.email }}</a></td>
-                        <td class="td-content">{{ member.visibility ? 'visible' : 'hidden' }}</td>
+                        <td>
+                            <span :class="member.visibility ? 'visibility-color-green' : 'visibility-color-red'">
+                                {{ member.visibility ? 'visible' : 'hidden' }}</span>
+                        </td>
                         <td><a class="w-100 dropdown-item data-link"
                                :href="'/admin/member-info/'+member.memberId">Show full data</a>
                             <div class="flex-row d-flex justify-content-around">
@@ -167,6 +170,8 @@ export default {
                     this.members = res.data;
                 }
             );
+    },
+    updated() {
     }
 }
 </script>
@@ -249,4 +254,13 @@ a {
 .tr-50 {
     height: 50px;
 }
+
+.visibility-color-green {
+    color: green;
+}
+
+.visibility-color-red {
+    color: red;
+}
+
 </style>
