@@ -105,10 +105,14 @@
                                    name="data[phone]"
                                    minlength="17"
                                    placeholder="+1 (555) 555-5555"
+                                   max="17"
                                    required
                                    type="tel"
                                    v-mask="'+# (###) ###-####'"
-                                   v-model="memberToEdit.phone">
+                                   v-model="memberToEdit.phone"
+                                   :key="phoneInputKey"
+                                   @keydown.capture="noLetters"
+                                   @change="phoneUpdate">
                             <span class="minLabel">Old Number: {{ oldPhone }}</span>
                             <span class="error" v-if="errors.phone">{{ errors.phone[0] }}</span>
                         </div>
@@ -237,12 +241,22 @@ export default {
             btnActive: false,
             oldPhoto: '',
             oldPhone: '',
-            fileInputKey: 0
+            fileInputKey: 0,
+            phoneInputKey: 0,
+            phoneNumberMask: ''
         }
     },
     methods: {
         noDigits: function (event) {
             if ('1234567890'.indexOf(event.key) !== -1) {
+                event.preventDefault()
+            }
+        },
+        noLetters: function (event) {
+            if (event.key === "Backspace" || event.key === "Tab") {
+                return true;
+            } else if ('1234567890'.indexOf(event.key) === -1) {
+                console.log(event.key)
                 event.preventDefault()
             }
         },
@@ -378,15 +392,21 @@ export default {
             this.fileInputKey++;
             this.deactivateButton();
             return true;
+        },
+        phoneUpdate() {
+            setTimeout(() => {
+                this.phoneInputKey++;
+            }, 0)
         }
     },
     beforeMount() {
         this.fetchCountries();
         Object.assign(this.memberToEdit, this.member);
-        this.oldPhone = this.memberToEdit.phone;
         this.oldPhoto = this.memberToEdit.photo;
+        this.oldPhone = this.memberToEdit.phone;
         delete this.memberToEdit.phone;
-    }
+        this.memberToEdit.phone = this.oldPhone;
+    },
 }
 </script>
 
