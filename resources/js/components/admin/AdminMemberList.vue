@@ -154,6 +154,11 @@ export default {
         },
         toggleEditParent(data) {
             this.editMember = data
+            axios.get('/getMembersInfo')
+                .then(res => {
+                        this.members = res.data;
+                    }
+                );
         },
     },
     beforeMount() {
