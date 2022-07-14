@@ -417,6 +417,12 @@ export default {
         retrieve() {
             this.$refs.inputFile.value = null;
             this.memberToEdit.photo = this.oldPhoto;
+            this.retrieveBtnActive = false;
+            if (this.memberToEdit.photo !== 'default-image.png'){
+                this.defaultBtnActive = false;
+            } else {
+                this.defaultBtnActive = true;
+            }
             this.photo_error = false;
             this.fileInputKey++;
             this.deactivateConfirmButton();
@@ -430,13 +436,13 @@ export default {
         },
         deactivateDefaultButton(){
             if(this.defaultBtnActive === false && this.memberToEdit.photo === 'default-image.png'){
-                this.defaultBtnActive = !this.defaultBtnActive;
-            } else if(this.defaultBtnActive !== false && this.memberToEdit.photo !== 'default-image.png'){
-                this.defaultBtnActive = !this.defaultBtnActive;
+                this.defaultBtnActive = true;
+            } else if(this.defaultBtnActive === true && this.memberToEdit.photo !== 'default-image.png'){
+                this.defaultBtnActive = false;
             } else {
                 return false;
             }
-        }
+        },
     },
     beforeMount() {
         this.fetchCountries();
@@ -444,15 +450,13 @@ export default {
         this.oldPhoto = this.memberToEdit.photo;
         this.oldPhone = this.memberToEdit.phone;
         delete this.memberToEdit.phone;
-        this.memberToEdit.phone = this.oldPhone;
+        this.memberToEdit.phone = this.oldPhone
+        this.retrieveBtnActive = true;
         if (this.memberToEdit.photo === 'default-image.png'){
             this.deactivateDefaultButton();
         }
     },
     updated() {
-        if (this.memberToEdit.photo === 'default-image.png'){
-            this.deactivateDefaultButton();
-        }
         this.retrieveBtnActive = this.memberToEdit.photo === this.oldPhoto;
     }
 }
