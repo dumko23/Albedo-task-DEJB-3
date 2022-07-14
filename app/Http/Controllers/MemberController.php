@@ -12,7 +12,7 @@ class MemberController extends Controller
 
     public function getMembersCount(): int
     {
-        return count(Member::all(['email']));
+        return count(Member::getMembers());
     }
 
     public function getMembers(): \Illuminate\Support\Collection
