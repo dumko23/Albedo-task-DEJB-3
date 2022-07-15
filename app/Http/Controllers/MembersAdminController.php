@@ -11,7 +11,7 @@ class MembersAdminController extends Controller
 {
     public function getMemberFullData($memberId): \Illuminate\Support\Collection
     {
-        return MembersAdmin::getFullInfo($memberId);
+        return MembersAdmin::getFullInfo('memberId', $memberId);
 
     }
 
@@ -65,25 +65,25 @@ class MembersAdminController extends Controller
                     ->extension();
             $request->file('photo')->move(public_path('images'), $newImageName);
             $data['photo'] = $newImageName;
-        } else  {
+        } else {
             $data['photo'] = $request->get('photo');
         }
 
 
-        foreach ($request->all() as $key => $value) {
-            if (!array_search($key, ['newName', 'photo']))
-                $data[$key] = $value;
+        foreach ($request->except('newName', 'photo', "oldEmail") as $key => $value) {
+            $data[$key] = $value;
         }
 
-        MembersAdmin::editMember($data);
+        MembersAdmin::editMember($data, 'email', $request->get('oldEmail'));
     }
 
     public function deleteMember(Request $request)
     {
-        MembersAdmin::deleteMember($request->all());
+        MembersAdmin::deleteMember('email', $request->get('email'));
     }
 
-    public function toggleVisibility(Request $request){
+    public function toggleVisibility(Request $request)
+    {
         MembersAdmin::toggleVisibility($request->all());
     }
 }

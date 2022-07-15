@@ -11,39 +11,25 @@ class MembersAdmin extends Model
 {
     use HasFactory;
 
-    public static function editMember($data)
+    public static function editMember($data, $whereField, $whereValue)
     {
         DB::table('members')
-            ->where('email', $data['oldEmail'])
-            ->update(
-                [
-                    'about' => $data['about'],
-                    'position' => $data['position'],
-                    'company' => $data['company'],
-                    'photo' => $data['photo'],
-                    'firstName' => $data['firstName'],
-                    'lastName' => $data['lastName'],
-                    'birthDate' => $data['birthDate'],
-                    'country' => $data['country'],
-                    'subject' => $data['subject'],
-                    'phone' => $data['phone'],
-                    'email' => $data['email'],
-                ]
-            );
+            ->where($whereField, $whereValue)
+            ->update($data);
     }
 
-    public static function deleteMember($data)
+    public static function deleteMember($whereField, $whereValue)
     {
 
         DB::table('members')
-            ->where('email', $data['email'])
+            ->where($whereField, $whereValue)
             ->delete();
     }
 
-    public static function getFullInfo($data): Collection
+    public static function getFullInfo($whereField, $whereValue): Collection
     {
         return DB::table('members')
-            ->where('memberId', $data)
+            ->where($whereField, $whereValue)
             ->get();
     }
 

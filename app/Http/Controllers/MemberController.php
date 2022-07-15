@@ -12,12 +12,16 @@ class MemberController extends Controller
 
     public function getMembersCount(): int
     {
-        return Member::getVisibleMembersCount();
+        return Member::getVisibleMembersCount('email', 'visibility', true);
     }
 
     public function getMembers(): Collection
     {
-        return Member::getMembers();
+        return Member::getMembers(
+            ['firstName', 'lastName', 'subject', 'photo', 'email'],
+            'visibility',
+            true
+        );
     }
 
     public function send(Request $request)
@@ -79,12 +83,12 @@ class MemberController extends Controller
 
         $data = [
             'email' => $request->get('email'),
-            'path' => $newImageName,
+            'photo' => $newImageName,
             'position' => $request->get('position'),
             'company' => $request->get('company'),
             'about' => $request->get('about'),
         ];
-        Member::updateMember($data);
+        Member::updateMember($data, 'email', $data['email']);
     }
 
 

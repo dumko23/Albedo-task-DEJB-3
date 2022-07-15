@@ -14,43 +14,27 @@ class Member extends Model
     public static function storeMember($data)
     {
         DB::table('members')
-            ->insert(
-                [
-                    'firstname' => $data['firstName'],
-                    'lastName' => $data['lastName'],
-                    'birthDate' => $data['birthDate'],
-                    'country' => $data['country'],
-                    'subject' => $data['subject'],
-                    'phone' => $data['phone'],
-                    'email' => $data['email'],
-                ]
-            );
+            ->insert($data);
     }
 
-    public static function updateMember($data)
+    public static function updateMember($data, $whereField, $whereValue)
     {
         DB::table('members')
-            ->where('email', $data['email'])
-            ->update([
-                    'about' => $data['about'],
-                    'position' => $data['position'],
-                    'company' => $data['company'],
-                    'photo' => $data['path']
-                ]
-            );
+            ->where($whereField, $whereValue)
+            ->update($data);
     }
 
-    public static function getMembers(): Collection
+    public static function getMembers($select, $whereField, $whereValue): Collection
     {
         return DB::table('members')
-            ->where('visibility', true)
-            ->get(['firstName', 'lastName', 'subject', 'photo', 'email']);
+            ->where($whereField, $whereValue)
+            ->get($select);
     }
 
-    public static function getVisibleMembersCount(): int
+    public static function getVisibleMembersCount($select, $whereField, $whereValue): int
     {
         return DB::table('members')
-            ->where('visibility', true)
-            ->count('email');
+            ->where($whereField, $whereValue)
+            ->count($select);
     }
 }
