@@ -5,7 +5,7 @@
         <table class='member-table' v-for="member in $data.members">
             <tr>
                 <td class='descr'>Photo</td>
-                <td><img :src='member.photo' alt='user photo'></td>
+                <td><img :src="'/images/'+member.photo" alt='user photo'></td>
             </tr>
             <tr>
                 <td class='descr'>Full Name</td>

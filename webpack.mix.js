@@ -14,5 +14,5 @@ const mix = require('laravel-mix');
 mix.js('resources/js/app.js', 'public/js')
     .vue()
     .sass('resources/sass/app.scss', 'public/css')
-    .css('resources/css/members.css', 'public/css')
-    .copyDirectory('storage/app/public/images', 'public');
+    .css('resources/css/members.css', 'public/css');
+

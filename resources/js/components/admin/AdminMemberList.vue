@@ -33,7 +33,7 @@
                     </thead>
                     <tbody>
                     <tr class="tr-50" v-for="member in $data.members">
-                        <td class="img-td"><img class=" img-fluid" :src='"../"+member.photo'
+                        <td class="img-td"><img class=" img-fluid" :src='"../images/"+member.photo'
                                                 alt='user photo'></td>
                         <td>{{ member.firstName }} {{ member.lastName }}</td>
                         <td>{{ member.subject }}</td>

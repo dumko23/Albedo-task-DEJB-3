@@ -60,10 +60,10 @@ class MembersAdminController extends Controller
             ]);
 
         if ($request->hasFile('photo')) {
-            $newImageName = 'images/' . time() . '-' . $request->get('newName') . '.'
+            $newImageName = time() . '-' . $request->get('newName') . '.'
                 . $request->file('photo')
                     ->extension();
-            $request->file('photo')->move(public_path('images'), $newImageName);
+            $request->file('photo')->move(storage_path('app/images'), $newImageName);
             $data['photo'] = $newImageName;
         } else {
             $data['photo'] = $request->get('photo');
