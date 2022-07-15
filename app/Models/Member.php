@@ -46,4 +46,11 @@ class Member extends Model
             ->where('visibility', true)
             ->get(['firstName', 'lastName', 'subject', 'photo', 'email']);
     }
+
+    public static function getVisibleMembersCount(): int
+    {
+        return DB::table('members')
+            ->where('visibility', true)
+            ->count('email');
+    }
 }

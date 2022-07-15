@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Member;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class MemberController extends Controller
 {
@@ -12,10 +12,10 @@ class MemberController extends Controller
 
     public function getMembersCount(): int
     {
-        return count(Member::getMembers());
+        return Member::getVisibleMembersCount();
     }
 
-    public function getMembers(): \Illuminate\Support\Collection
+    public function getMembers(): Collection
     {
         return Member::getMembers();
     }
