@@ -26,24 +26,25 @@ Auth::routes();
 Route::get('/admin', function () {
     return view('home-admin');
 });
-Route::get('/admin/dashboard', function () {
-    return view('admin-dashboard', ['title' => 'Admin Page']);
-})->middleware('auth')->name('Admin Page');
-Route::get('/admin/member-info/{memberId}', function () {
-    return view('admin-dashboard', ['title' => 'Admin / Member Info']);
-})->middleware('auth')->name('Member Info');
 
-Route::get('getMembersInfo', [MembersAdminController::class, 'getMembersInfo'])
-    ->middleware('auth');
-Route::get('getMemberFullData/:{memberId}', [MembersAdminController::class, 'getMemberFullData'])
-    ->middleware('auth');
+Route::middleware('auth')->group(function () {
+    Route::get('/admin/dashboard', function () {
+        return view('admin-dashboard', ['title' => 'Admin Page']);
+    });
+    Route::get('/admin/member-info/{memberId}', function () {
+        return view('admin-dashboard', ['title' => 'Admin / Member Info']);
+    });
 
-Route::post('/editMember', [MembersAdminController::class, 'editMember'])
-    ->middleware('auth');
-Route::post('/deleteMember', [MembersAdminController::class, 'deleteMember'])
-    ->middleware('auth');
-Route::post('/toggleVisibility', [MembersAdminController::class, 'toggleVisibility'])
-    ->middleware('auth');
+    Route::controller(MembersAdminController::class)->group(function () {
+        Route::get('getMembersInfo', 'getMembersInfo');
+        Route::get('getMemberFullData/:{memberId}', 'getMemberFullData');
+
+        Route::post('/editMember', 'editMember');
+        Route::post('/deleteMember', 'deleteMember');
+        Route::post('/toggleVisibility', 'toggleVisibility');
+    });
+});
+
 
 /*
  * Public Routes
@@ -55,9 +56,9 @@ Route::get('/', function () {
 Route::get('/members', function () {
     return view('index', ['title' => 'Member List']);
 });
-
-Route::post('send', [MemberController::class, 'send']);
-Route::post('update', [MemberController::class, 'update']);
-Route::post('uploadFile', [MemberController::class, 'uploadFile']);
-
+Route::controller(MemberController::class)->group(function () {
+    Route::post('send', 'send');
+    Route::post('update', 'update');
+    Route::post('uploadFile', 'uploadFile');
+});
 
