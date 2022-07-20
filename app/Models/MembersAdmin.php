@@ -11,36 +11,6 @@ class MembersAdmin extends Model
 {
     use HasFactory;
 
-    public static function editMember($data, $whereField, $whereValue)
-    {
-        DB::table('members')
-            ->where($whereField, $whereValue)
-            ->update($data);
-    }
-
-    public static function deleteMember($whereField, $whereValue)
-    {
-
-        DB::table('members')
-            ->where($whereField, $whereValue)
-            ->delete();
-    }
-
-    public static function getFullInfo($whereField, $whereValue): Collection
-    {
-        return DB::table('members')
-            ->where($whereField, $whereValue)
-            ->get();
-    }
-
-    public static function toggleVisibility(array $data)
-    {
-        DB::table('members')
-            ->where('email', $data['email'])
-            ->update(
-                [
-                    'visibility' => $data['show']
-                ]
-            );
-    }
+    protected $table = 'members';
+    protected $primaryKey = 'member_id';
 }

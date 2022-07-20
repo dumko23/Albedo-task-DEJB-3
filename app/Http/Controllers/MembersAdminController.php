@@ -11,13 +11,12 @@ class MembersAdminController extends Controller
 {
     public function getMemberFullData($memberId): \Illuminate\Support\Collection
     {
-        return MembersAdmin::getFullInfo('memberId', $memberId);
-
+        return MembersAdmin::where('memberId', $memberId)->get();
     }
 
     public function getMembersInfo(): Collection
     {
-        return Member::all(['firstName', 'lastName', 'subject', 'photo', 'email', 'memberId', 'visibility']);
+        return MembersAdmin::all(['firstName', 'lastName', 'subject', 'photo', 'email', 'memberId', 'visibility']);
 
     }
 
@@ -74,16 +73,17 @@ class MembersAdminController extends Controller
             $data[$key] = $value;
         }
 
-        MembersAdmin::editMember($data, 'email', $request->get('oldEmail'));
+        MembersAdmin::where('email', $request->get('oldEmail'))->update($data);
     }
 
     public function deleteMember(Request $request)
     {
-        MembersAdmin::deleteMember('email', $request->get('email'));
+        MembersAdmin::where('email', $request->get('email'))->delete();
     }
 
     public function toggleVisibility(Request $request)
     {
-        MembersAdmin::toggleVisibility($request->all());
+        MembersAdmin::where('email', $request->get('email'))
+            ->update(['visibility' => $request->get('show')]);
     }
 }

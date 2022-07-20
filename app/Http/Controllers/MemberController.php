@@ -12,16 +12,12 @@ class MemberController extends Controller
 
     public function getMembersCount(): int
     {
-        return Member::getVisibleMembersCount('email', 'visibility', true);
+        return Member::where("visibility", true)->count('email');
     }
 
     public function getMembers(): Collection
     {
-        return Member::getMembers(
-            ['firstName', 'lastName', 'subject', 'photo', 'email'],
-            'visibility',
-            true
-        );
+        return Member::where("visibility", true)->get(['firstName', 'lastName', 'subject', 'photo', 'email']);
     }
 
     public function send(Request $request)
@@ -49,7 +45,7 @@ class MemberController extends Controller
 
             ]);
 
-        Member::storeMember($request->all());
+        Member::create($request->all())->save();
     }
 
     public function update(Request $request)
@@ -82,13 +78,13 @@ class MemberController extends Controller
         }
 
         $data = [
-            'email' => $request->get('email'),
             'photo' => $newImageName,
             'position' => $request->get('position'),
             'company' => $request->get('company'),
             'about' => $request->get('about'),
         ];
-        Member::updateMember($data, 'email', $data['email']);
+
+        Member::where('email', $request->get('email'))->update($data);
     }
 
 
