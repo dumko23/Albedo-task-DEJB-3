@@ -29,7 +29,7 @@
                 <table v-if="member.email">
                     <tr class="img-tr">
                         <td class='descr'>Photo</td>
-                        <td class="img-td"><img class="img-thumbnail img-fluid" :src='"../../"+member.photo'
+                        <td class="img-td"><img class="img-thumbnail img-fluid" :src="'/images/'+member.photo"
                                                 alt='user photo'></td>
                     </tr>
                     <tr v-for="(value, name) in tdNames">
